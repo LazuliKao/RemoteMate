@@ -52,6 +52,7 @@ class HookWindowsApp : IHookModule {
                         }
                     }
             }
+            // todo: 添加到设置，仅在开启后生效
             "com.microsoft.a3rdc.AppSettings".toClassOrNull()?.resolve()?.apply {
                 firstMethodOrNull {
                     name = "getScancodeEnabled"

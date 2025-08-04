@@ -3,6 +3,7 @@
 package io.github.lazulikao.remotemate.ui.activity
 
 import android.content.ComponentName
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Typeface
 import android.os.Bundle
@@ -79,6 +80,19 @@ class MainActivity : AppViewsActivity() {
                         textColor = colorResource(R.color.colorTextGray)
                         textSize = 25f
                         updateTypeface(Typeface.BOLD)
+                    }
+                    ImageView(
+                        lparams = LayoutParams(27.dp, 27.dp) {
+                            marginEnd = 10.dp
+                        }
+                    ) {
+                        background = getThemeAttrsDrawable(Android_R.attr.selectableItemBackgroundBorderless)
+                        alpha = 0.85f
+                        setImageResource(Android_R.drawable.ic_menu_preferences)
+                        imageTintList = stateColorResource(R.color.colorTextGray)
+                        setOnClickListener {
+                            startActivity(Intent(this@MainActivity, SettingActivity::class.java))
+                        }
                     }
                     ImageView(
                         lparams = LayoutParams(27.dp, 27.dp) {
