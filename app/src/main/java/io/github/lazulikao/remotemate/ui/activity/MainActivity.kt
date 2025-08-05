@@ -6,6 +6,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Typeface
+import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.util.Linkify
@@ -19,6 +20,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.setPadding
 import androidx.core.view.updateMargins
 import androidx.core.view.updatePadding
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import io.github.lazulikao.remotemate.BuildConfig
 import io.github.lazulikao.remotemate.R
 import com.highcapable.betterandroid.system.extension.component.disableComponent
@@ -43,7 +45,12 @@ import android.R as Android_R
 
 class MainActivity : AppViewsActivity() {
 
-    private val homeComponent by lazy { ComponentName(packageName, "${BuildConfig.APPLICATION_ID}.Home") } 
+    private val homeComponent by lazy {
+        ComponentName(
+            packageName,
+            "${BuildConfig.APPLICATION_ID}.Home"
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,23 +90,11 @@ class MainActivity : AppViewsActivity() {
                     }
                     ImageView(
                         lparams = LayoutParams(27.dp, 27.dp) {
-                            marginEnd = 10.dp
-                        }
-                    ) {
-                        background = getThemeAttrsDrawable(Android_R.attr.selectableItemBackgroundBorderless)
-                        alpha = 0.85f
-                        setImageResource(Android_R.drawable.ic_menu_preferences)
-                        imageTintList = stateColorResource(R.color.colorTextGray)
-                        setOnClickListener {
-                            startActivity(Intent(this@MainActivity, SettingActivity::class.java))
-                        }
-                    }
-                    ImageView(
-                        lparams = LayoutParams(27.dp, 27.dp) {
                             marginEnd = 5.dp
                         }
                     ) {
-                        background = getThemeAttrsDrawable(Android_R.attr.selectableItemBackgroundBorderless)
+                        background =
+                            getThemeAttrsDrawable(Android_R.attr.selectableItemBackgroundBorderless)
                         alpha = 0.85f
                         setImageResource(R.mipmap.ic_github)
                         imageTintList = stateColorResource(R.color.colorTextGray)
@@ -116,10 +111,12 @@ class MainActivity : AppViewsActivity() {
                     },
                     init = {
                         gravity = Gravity.CENTER or Gravity.START
-                        setBackgroundResource(when {
-                            YukiHookAPI.Status.isXposedModuleActive -> R.drawable.bg_green_round
-                            else -> R.drawable.bg_dark_round
-                        })
+                        setBackgroundResource(
+                            when {
+                                YukiHookAPI.Status.isXposedModuleActive -> R.drawable.bg_green_round
+                                else -> R.drawable.bg_dark_round
+                            }
+                        )
                     }
                 ) {
                     ImageView(
@@ -128,10 +125,12 @@ class MainActivity : AppViewsActivity() {
                             marginEnd = 5.dp
                         }
                     ) {
-                        setImageResource(when {
-                            YukiHookAPI.Status.isXposedModuleActive -> R.mipmap.ic_success
-                            else -> R.mipmap.ic_warn
-                        })
+                        setImageResource(
+                            when {
+                                YukiHookAPI.Status.isXposedModuleActive -> R.mipmap.ic_success
+                                else -> R.mipmap.ic_warn
+                            }
+                        )
                         imageTintList = stateColorResource(R.color.white)
                     }
                     LinearLayout(
@@ -142,18 +141,20 @@ class MainActivity : AppViewsActivity() {
                         }
                     ) {
                         TextView(
-                            lparams = LayoutParams { 
+                            lparams = LayoutParams {
                                 bottomMargin = 5.dp
                             }
-                        ) { 
+                        ) {
                             isSingleLine = true
                             ellipsize = TextUtils.TruncateAt.END
                             textColor = colorResource(R.color.white)
                             textSize = 18f
-                            text = stringResource(when {
-                                YukiHookAPI.Status.isXposedModuleActive -> R.string.module_is_activated
-                                else -> R.string.module_not_activated
-                            })
+                            text = stringResource(
+                                when {
+                                    YukiHookAPI.Status.isXposedModuleActive -> R.string.module_is_activated
+                                    else -> R.string.module_not_activated
+                                }
+                            )
                         }
                         LinearLayout(
                             lparams = LayoutParams {
@@ -162,17 +163,20 @@ class MainActivity : AppViewsActivity() {
                             init = {
                                 gravity = Gravity.CENTER or Gravity.START
                             }
-                        ) { 
+                        ) {
                             TextView {
                                 alpha = 0.8f
                                 isSingleLine = true
                                 ellipsize = TextUtils.TruncateAt.END
                                 textColor = colorResource(R.color.white)
                                 textSize = 13f
-                                text = stringResource(R.string.module_version, BuildConfig.VERSION_NAME)
+                                text = stringResource(
+                                    R.string.module_version,
+                                    BuildConfig.VERSION_NAME
+                                )
                             }
                             TextView(
-                                lparams = LayoutParams { 
+                                lparams = LayoutParams {
                                     leftMargin = 5.dp
                                 }
                             ) {
@@ -194,7 +198,7 @@ class MainActivity : AppViewsActivity() {
                             text = "- Your custom text here -"
                         }
                         TextView(
-                            lparams = LayoutParams { 
+                            lparams = LayoutParams {
                                 topMargin = 5.dp
                             }
                         ) {
@@ -295,9 +299,16 @@ class MainActivity : AppViewsActivity() {
                             }
                         }
                         Space(lparams = LayoutParams(height = 10.dp))
+                        Layout(createSettingsItem())
+                        Space(lparams = LayoutParams(height = 10.dp))
                         Layout(createPromotionItem(R.string.about_module, R.mipmap.ic_yukihookapi))
                         Space(lparams = LayoutParams(height = 10.dp))
-                        Layout(createPromotionItem(R.string.about_module_extension, R.mipmap.ic_kavaref))
+                        Layout(
+                            createPromotionItem(
+                                R.string.about_module_extension,
+                                R.mipmap.ic_kavaref
+                            )
+                        )
                     }
                 }
             }
@@ -335,6 +346,48 @@ class MainActivity : AppViewsActivity() {
                 text = stringResource(stringResource)
                 textColor = colorResource(R.color.colorTextGray)
                 textSize = 11f
+            }
+        }
+    }
+
+    private fun createSettingsItem() = Hikageable<MarginLayoutParams> {
+        LinearLayout(
+            lparams = LayoutParams(widthMatchParent = true) {
+                updateMargins(left = 15.dp, right = 15.dp)
+            },
+            init = {
+                gravity = Gravity.CENTER or Gravity.START
+                setBackgroundResource(R.drawable.bg_permotion_round)
+                setPadding(10.dp)
+                setOnClickListener {
+                    startActivity(Intent(this@MainActivity, SettingActivity::class.java))
+                }
+            }
+        ) {
+            ImageView(
+                lparams = LayoutParams(35.dp, 35.dp) {
+                    marginStart = 10.dp
+                }
+            ) {
+                setImageResource(R.mipmap.ic_setting)
+            }
+            TextView(
+                lparams = LayoutParams(widthMatchParent = true)
+            ) {
+                ellipsize = TextUtils.TruncateAt.END
+                maxLines = 2
+                setLineSpacing(6f, 1f)
+                text = stringResource(R.string.settings)
+                textColor = colorResource(R.color.colorTextGray)
+                textSize = 11f
+            }
+            ImageView(
+                lparams = LayoutParams(35.dp, 35.dp) {
+                    marginEnd = 10.dp
+                }
+            ) {
+                setImageDrawable(R.drawable.ic_chevron_right)
+                imageTintList = stateColorResource(R.color.colorTextGray)
             }
         }
     }

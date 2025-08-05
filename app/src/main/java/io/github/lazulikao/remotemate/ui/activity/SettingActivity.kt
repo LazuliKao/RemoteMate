@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
+import android.widget.LinearLayout
 import androidx.core.view.updateMargins
 import androidx.core.view.updatePadding
 import io.github.lazulikao.remotemate.R
@@ -41,7 +42,7 @@ class SettingActivity : AppViewsActivity() {
                     lparams = LayoutParams(widthMatchParent = true),
                     init = {
                         gravity = Gravity.CENTER or Gravity.START
-                        updatePadding(horizontal = 15.dp)
+                        updatePadding( 15.dp)
                         updatePadding(top = 13.dp, bottom = 5.dp)
                     }
                 ) {
@@ -72,7 +73,7 @@ class SettingActivity : AppViewsActivity() {
 
                 NestedScrollView(
                     lparams = LayoutParams(matchParent = true) {
-                        updateMargins(vertical = 10.dp)
+                        updateMargins(10.dp)
                     },
                     init = {
                         isFillViewport = true
@@ -88,7 +89,7 @@ class SettingActivity : AppViewsActivity() {
                         // Remote control settings
                         LinearLayout(
                             lparams = LayoutParams(widthMatchParent = true) {
-                                updateMargins(horizontal = 15.dp)
+                                updateMargins( 15.dp)
                             },
                             init = {
                                 orientation = LinearLayout.VERTICAL
@@ -155,7 +156,7 @@ class SettingActivity : AppViewsActivity() {
                         // Keyboard settings
                         LinearLayout(
                             lparams = LayoutParams(widthMatchParent = true) {
-                                updateMargins(horizontal = 15.dp)
+                                updateMargins( 15.dp)
                             },
                             init = {
                                 orientation = LinearLayout.VERTICAL
@@ -237,7 +238,7 @@ class SettingActivity : AppViewsActivity() {
                         // Advanced settings
                         LinearLayout(
                             lparams = LayoutParams(widthMatchParent = true) {
-                                updateMargins(horizontal = 15.dp)
+                                updateMargins(15.dp)
                             },
                             init = {
                                 orientation = LinearLayout.VERTICAL
