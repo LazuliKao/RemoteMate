@@ -356,7 +356,8 @@ class MainActivity : AppViewsActivity() {
                 updateMargins(left = 15.dp, right = 15.dp)
             },
             init = {
-                gravity = Gravity.CENTER or Gravity.START
+                orientation = LinearLayout.HORIZONTAL // 显式声明方向
+                gravity = Gravity.CENTER_VERTICAL
                 setBackgroundResource(R.drawable.bg_permotion_round)
                 setPadding(10.dp)
                 setOnClickListener {
@@ -364,16 +365,22 @@ class MainActivity : AppViewsActivity() {
                 }
             }
         ) {
+            // icon on left
             ImageView(
                 lparams = LayoutParams(35.dp, 35.dp) {
-                    marginStart = 10.dp
+                    marginEnd = 10.dp
                 }
             ) {
                 setImageResource(R.mipmap.ic_setting)
             }
+
+            // text
             TextView(
-                lparams = LayoutParams(widthMatchParent = true)
+                lparams = LayoutParams(0, heightMatchParent = true) {
+                    weight = 1f
+                }
             ) {
+                gravity = Gravity.CENTER_VERTICAL
                 ellipsize = TextUtils.TruncateAt.END
                 maxLines = 2
                 setLineSpacing(6f, 1f)
@@ -381,13 +388,12 @@ class MainActivity : AppViewsActivity() {
                 textColor = colorResource(R.color.colorTextGray)
                 textSize = 11f
             }
+
+            // arrow on right
             ImageView(
-                lparams = LayoutParams(35.dp, 35.dp) {
-                    marginEnd = 10.dp
-                }
+                lparams = LayoutParams(25.dp, 35.dp)
             ) {
-                setImageDrawable(R.drawable.ic_chevron_right)
-                imageTintList = stateColorResource(R.color.colorTextGray)
+                setImageResource(R.drawable.ic_chevron_right)
             }
         }
     }
