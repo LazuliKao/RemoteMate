@@ -1,5 +1,6 @@
 package io.github.lazulikao.remotemate.hook.modules
 
+import android.annotation.SuppressLint
 import android.view.KeyEvent
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.param.PackageParam
@@ -18,9 +19,9 @@ class HookKeyboard : IHookModule {
                         before {
                             val e = args[1] as KeyEvent
                             if (enableLog) {
-                                logDebug("HookKeyboard: interceptKeyBeforeDispatching called with event: $e , device: ${e.device}")
+                                logDebug("HookKeyboard: interceptKeyBeforeDispatching called with event: $e , device: ${e.device}. type: ${e.device.keyboardType}, external: ${e.device.isExternal}")
                             }
-                            if (!e.device.isVirtual) 
+                            if (e.device.isExternal)
                                 result = 0L // Return 0 to indicate that the event has been handled
                         }
                     }
