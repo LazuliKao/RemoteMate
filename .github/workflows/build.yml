@@ -1,0 +1,92 @@
+name: Build APK
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+      
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
+      
+      - name: Build Release APK
+        run: ./gradlew assembleRelease --stacktrace
+      
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: RemoteMate-debug
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 30
+      
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: RemoteMate-release
+          path: app/build/outputs/apk/release/*.apk
+          retention-days: 90
+      
+      - name: Get version name
+        if: startsWith(github.ref, 'refs/tags/')
+        id: version
+        run: |
+          VERSION_NAME=$(grep "project.app.versionName" gradle.properties | cut -d'=' -f2 | tr -d '"')
+          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "tag_name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/release/*.apk
+          draft: false
+          prerelease: false
+          name: RemoteMate ${{ steps.version.outputs.tag_name }}
+          body: |
+            ## RemoteMate ${{ steps.version.outputs.tag_name }}
+            
+            ### 下载 / Download
+            
+            - **RemoteMate-debug.apk**: Debug版本，包含调试信息
+            - **RemoteMate-release.apk**: Release版本，已优化和混淆
+            
+            ### 安装说明 / Installation
+            
+            1. 下载对应的APK文件
+            2. 在设备上安装APK
+            3. 在Xposed/LSPosed模块中启用RemoteMate
+            4. 重启设备或目标应用
+            
+            ### 版本信息 / Version Info
+            
+            - Version: ${{ steps.version.outputs.version_name }}
+            - Build: ${{ github.sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
