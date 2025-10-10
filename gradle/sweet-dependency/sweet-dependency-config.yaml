@@ -19,7 +19,7 @@ repositories:
 plugins:
   com.android.application:
     alias: android-application
-    version: 8.11.1
+    version: 8.1.1
   org.jetbrains.kotlin.android:
     alias: kotlin-android
     version: 2.2.0
