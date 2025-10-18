@@ -34,3 +34,37 @@ To build locally:
 
 The built APKs will be in `app/build/outputs/apk/`.
 
+### APK Signing
+
+Release APKs are signed automatically in GitHub Actions using repository secrets. For local signed builds, create a `keystore.properties` file in the project root:
+
+```properties
+storeFile=path/to/your/keystore.jks
+storePassword=your_keystore_password
+keyAlias=your_key_alias
+keyPassword=your_key_password
+```
+
+**Note:** The `keystore.properties` file and keystore files are excluded from version control for security.
+
+#### Setting up GitHub Actions Secrets
+
+To enable APK signing in CI/CD, configure the following secrets in your repository settings:
+
+1. `KEYSTORE_BASE64`: Base64-encoded keystore file
+   ```bash
+   base64 -i your-keystore.jks | pbcopy  # macOS
+   base64 -w 0 your-keystore.jks         # Linux
+   ```
+2. `KEYSTORE_PASSWORD`: Keystore password
+3. `KEY_ALIAS`: Key alias name
+4. `KEY_PASSWORD`: Key password
+
+#### Creating a Keystore
+
+If you don't have a keystore yet, create one with:
+
+```bash
+keytool -genkey -v -keystore remotemate.jks -keyalg RSA -keysize 2048 -validity 10000 -alias remotemate
+```
+
