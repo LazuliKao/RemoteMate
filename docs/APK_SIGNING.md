@@ -24,7 +24,7 @@ Follow the prompts to enter passwords and information. Keep your keystore file a
 
 ### 2. 配置签名属性 / Configure Signing Properties
 
-1. 复制模板文件 / Copy the template file:
+1. 复制模板文件 / Copy the template file (from project root):
    ```bash
    cp keystore.properties.template keystore.properties
    ```
@@ -98,11 +98,11 @@ Pull requests will not sign APKs to protect the signing keys.
 Verify APK signature with:
 
 ```bash
-# 查看签名信息 / View signature info
-jarsigner -verify -verbose -certs app/build/outputs/apk/release/RemoteMate-release.apk
+# 查看签名信息 / View signature info (replace with actual APK filename)
+jarsigner -verify -verbose -certs app/build/outputs/apk/release/*.apk
 
 # 或使用apksigner / Or use apksigner
-apksigner verify --print-certs app/build/outputs/apk/release/RemoteMate-release.apk
+apksigner verify --print-certs app/build/outputs/apk/release/*.apk
 ```
 
 ## 故障排除 / Troubleshooting
