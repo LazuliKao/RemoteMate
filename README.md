@@ -34,3 +34,13 @@ To build locally:
 
 The built APKs will be in `app/build/outputs/apk/`.
 
+### APK Signing
+
+Release APKs are automatically signed when built. For detailed instructions on:
+- Setting up local signing for development
+- Configuring CI/CD signing with GitHub Secrets  
+- Verifying APK signatures
+- Troubleshooting signing issues
+
+Please refer to the [APK Signing Configuration Guide](docs/APK_SIGNING.md) (中文版本和English available).
+
