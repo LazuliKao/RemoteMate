@@ -98,11 +98,15 @@ Pull requests will not sign APKs to protect the signing keys.
 Verify APK signature with:
 
 ```bash
-# 查看签名信息 / View signature info (replace with actual APK filename)
-jarsigner -verify -verbose -certs app/build/outputs/apk/release/*.apk
+# 查看签名信息 / View signature info
+# Replace <apk-file> with your actual APK filename
+jarsigner -verify -verbose -certs app/build/outputs/apk/release/<apk-file>.apk
 
 # 或使用apksigner / Or use apksigner
-apksigner verify --print-certs app/build/outputs/apk/release/*.apk
+apksigner verify --print-certs app/build/outputs/apk/release/<apk-file>.apk
+
+# 示例 / Example:
+# jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release.apk
 ```
 
 ## 故障排除 / Troubleshooting
