@@ -12,4 +12,8 @@
     <string name="hide_app_icon_on_launcher_tip">隐藏模块图标后界面可能会被关闭，将不会再在桌面显示，你可以在 EdXposed、LSPosed 中找到模块设置并打开。</string>
     <string name="hide_app_icon_on_launcher_notice">注意：请务必在 LSPosed 中关闭“强制显示桌面图标”功能</string>
     <string name="settings">设置</string>
+    <string name="external_only_title">仅外接键盘</string>
+    <string name="external_only_summary">仅拦截外接键盘的事件，忽略内置键盘</string>
+    <string name="target_app_only_title">仅目标应用</string>
+    <string name="target_app_only_summary">仅在微软远程桌面处于前台时拦截键盘事件</string>
 </resources>

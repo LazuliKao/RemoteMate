@@ -100,6 +100,8 @@ class SettingActivity : AppViewsActivity() {
                         Space(lparams = LayoutParams(height = 8.dp))
 
                         // Keyboard Hook Settings Card
+                        val isExternalOnlyInitially = hookKeyboardPrefs.getBoolean("external_only", true)
+                        val isTargetAppOnlyInitially = hookKeyboardPrefs.getBoolean("target_app_only", true)
                         LinearLayout(
                             lparams = LayoutParams(widthMatchParent = true),
                             init = {
@@ -214,6 +216,118 @@ class SettingActivity : AppViewsActivity() {
                                             hookKeyboardPrefs.edit { putBoolean("enable_hook_keyboard", checked) }
                                         }
                                         hookStatusLabel?.text = if (checked) "Enabled" else "Disabled"
+                                    }
+                                }
+                            }
+
+                            // Divider
+                            View(
+                                lparams = LayoutParams(widthMatchParent = true, height = 1.dp) {
+                                    topMargin = 16.dp
+                                    bottomMargin = 16.dp
+                                }
+                            ) {
+                                setBackgroundColor(ColorUtils.setAlphaComponent(colorResource(R.color.colorTextDark), 24))
+                            }
+
+                            // External Only Switch
+                            LinearLayout(
+                                lparams = LayoutParams(widthMatchParent = true),
+                                init = {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    gravity = Gravity.CENTER_VERTICAL
+                                }
+                            ) {
+                                LinearLayout(
+                                    lparams = LayoutParams(widthMatchParent = true) {
+                                        weight = 1f
+                                        marginEnd = 12.dp
+                                    },
+                                    init = {
+                                        orientation = LinearLayout.VERTICAL
+                                    }
+                                ) {
+                                    TextView {
+                                        text = getString(R.string.external_only_title)
+                                        textColor = colorResource(R.color.colorTextGray)
+                                        textSize = 16f
+                                    }
+                                    TextView(
+                                        lparams = LayoutParams {
+                                            topMargin = 4.dp
+                                        }
+                                    ) {
+                                        text = getString(R.string.external_only_summary)
+                                        textColor = colorResource(R.color.colorTextDark)
+                                        textSize = 12f
+                                        alpha = 0.7f
+                                        setLineSpacing(4f, 1f)
+                                    }
+                                }
+                                MaterialSwitch(
+                                    lparams = LayoutParams()
+                                ) {
+                                    isChecked = isExternalOnlyInitially
+                                    setOnCheckedChangeListener { button, checked ->
+                                        if (button.isPressed) {
+                                            hookKeyboardPrefs.edit { putBoolean("external_only", checked) }
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Divider
+                            View(
+                                lparams = LayoutParams(widthMatchParent = true, height = 1.dp) {
+                                    topMargin = 16.dp
+                                    bottomMargin = 16.dp
+                                }
+                            ) {
+                                setBackgroundColor(ColorUtils.setAlphaComponent(colorResource(R.color.colorTextDark), 24))
+                            }
+
+                            // Target App Only Switch
+                            LinearLayout(
+                                lparams = LayoutParams(widthMatchParent = true),
+                                init = {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    gravity = Gravity.CENTER_VERTICAL
+                                }
+                            ) {
+                                LinearLayout(
+                                    lparams = LayoutParams(widthMatchParent = true) {
+                                        weight = 1f
+                                        marginEnd = 12.dp
+                                    },
+                                    init = {
+                                        orientation = LinearLayout.VERTICAL
+                                    }
+                                ) {
+                                    TextView {
+                                        text = getString(R.string.target_app_only_title)
+                                        textColor = colorResource(R.color.colorTextGray)
+                                        textSize = 16f
+                                    }
+                                    TextView(
+                                        lparams = LayoutParams {
+                                            topMargin = 4.dp
+                                        }
+                                    ) {
+                                        text = getString(R.string.target_app_only_summary)
+                                        textColor = colorResource(R.color.colorTextDark)
+                                        textSize = 12f
+                                        alpha = 0.7f
+                                        setLineSpacing(4f, 1f)
+                                    }
+                                }
+                                MaterialSwitch(
+                                    lparams = LayoutParams()
+                                ) {
+                                    isChecked = isTargetAppOnlyInitially
+                                    setOnCheckedChangeListener { button, checked ->
+                                        if (button.isPressed) {
+                                            hookKeyboardPrefs.edit { putBoolean("target_app_only", checked) }
+                                        }
                                     }
                                 }
                             }
