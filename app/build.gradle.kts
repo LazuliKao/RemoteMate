@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -19,7 +20,7 @@ android {
         versionCode = gropify.project.app.versionCode
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    
+
     signingConfigs {
         create("release") {
             // For CI/CD: These values are provided via environment variables
@@ -27,14 +28,15 @@ android {
             storePassword = System.getenv("KEYSTORE_PASSWORD")
             keyAlias = System.getenv("KEY_ALIAS")
             keyPassword = System.getenv("KEY_PASSWORD")
-            
+
             // For local builds: Load from local.properties file
             if (storeFile == null) {
                 val keystorePropertiesFile = rootProject.file("keystore.properties")
                 if (keystorePropertiesFile.exists()) {
-                    val keystoreProperties = java.util.Properties()
+
+                    val keystoreProperties = Properties()
                     keystoreProperties.load(keystorePropertiesFile.inputStream())
-                    
+
                     keystoreProperties.getProperty("storeFile")?.let {
                         storeFile = rootProject.file(it)
                     }
@@ -45,13 +47,16 @@ android {
             }
         }
     }
-    
+
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
             // Apply signing config if available
             if (signingConfigs.getByName("release").storeFile != null) {
                 signingConfig = signingConfigs.getByName("release")
