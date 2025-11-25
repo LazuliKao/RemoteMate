@@ -32,8 +32,12 @@ import android.R as Android_R
 class SettingActivity : AppViewsActivity() {
 
     private val hookKeyboardPrefs by lazy { prefs("hook_keyboard") }
+    private val hookWindowsAppPrefs by lazy { prefs("hook_windows_app") }
     private var hookStatusLabel: TextView? = null
+    private var windowsAppStatusLabel: TextView? = null
     private var targetAppsLabel: TextView? = null
+    private var targetAppsDivider: View? = null
+    private var targetAppsContainer: LinearLayout? = null
 
     private val appSelectorLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -356,17 +360,23 @@ class SettingActivity : AppViewsActivity() {
                                         if (button.isPressed) {
                                             hookKeyboardPrefs.edit { putBoolean("target_app_only", checked) }
                                         }
+                                        // 显示/隐藏 Target Apps Selection
+                                        val visibility = if (checked) View.VISIBLE else View.GONE
+                                        targetAppsDivider?.visibility = visibility
+                                        targetAppsContainer?.visibility = visibility
                                     }
                                 }
                             }
 
-                            // Divider
+                            // Divider (for Target Apps Selection)
                             View(
                                 lparams = LayoutParams(widthMatchParent = true, height = 1.dp) {
                                     topMargin = 16.dp
                                     bottomMargin = 16.dp
                                 }
                             ) {
+                                targetAppsDivider = this
+                                visibility = if (isTargetAppOnlyInitially) View.VISIBLE else View.GONE
                                 setBackgroundColor(ColorUtils.setAlphaComponent(colorResource(R.color.colorTextDark), 24))
                             }
 
@@ -374,6 +384,8 @@ class SettingActivity : AppViewsActivity() {
                             LinearLayout(
                                 lparams = LayoutParams(widthMatchParent = true),
                                 init = {
+                                    targetAppsContainer = this
+                                    visibility = if (isTargetAppOnlyInitially) View.VISIBLE else View.GONE
                                     orientation = LinearLayout.HORIZONTAL
                                     gravity = Gravity.CENTER_VERTICAL
                                     background = getThemeAttrsDrawable(Android_R.attr.selectableItemBackground)
@@ -428,10 +440,213 @@ class SettingActivity : AppViewsActivity() {
                             }
                         }
 
+                        Space(lparams = LayoutParams(height = 16.dp))
+
+                        // Windows App Hook Settings Card
+                        val isHideSoftKeyboardInitially = hookWindowsAppPrefs.getBoolean("hide_soft_keyboard", true)
+                        val isForceScancodeInitially = hookWindowsAppPrefs.getBoolean("force_scancode", true)
+                        val isWindowsAppHookEnabled = isHideSoftKeyboardInitially || isForceScancodeInitially
+                        LinearLayout(
+                            lparams = LayoutParams(widthMatchParent = true),
+                            init = {
+                                orientation = LinearLayout.VERTICAL
+                                setBackgroundResource(R.drawable.bg_permotion_round)
+                                updatePadding(left = 20.dp, top = 20.dp, right = 20.dp, bottom = 20.dp)
+                                elevation = 6f
+                            }
+                        ) {
+                            // Card header
+                            LinearLayout(
+                                lparams = LayoutParams(widthMatchParent = true) {
+                                    bottomMargin = 12.dp
+                                },
+                                init = {
+                                    gravity = Gravity.CENTER_VERTICAL
+                                }
+                            ) {
+                                LinearLayout(
+                                    lparams = LayoutParams(40.dp, 40.dp) {
+                                        marginEnd = 12.dp
+                                    },
+                                    init = {
+                                        gravity = Gravity.CENTER
+                                        background = GradientDrawable().apply {
+                                            cornerRadius = 20.dp.toFloat()
+                                            setColor(ColorUtils.setAlphaComponent(colorResource(R.color.colorTextDark), 30))
+                                        }
+                                    }
+                                ) {
+                                    ImageView(
+                                        lparams = LayoutParams(18.dp, 18.dp)
+                                    ) {
+                                        setImageResource(Android_R.drawable.ic_menu_manage)
+                                        imageTintList = stateColorResource(R.color.colorTextGray)
+                                    }
+                                }
+                                TextView(
+                                    lparams = LayoutParams {
+                                        weight = 1f
+                                    }
+                                ) {
+                                    text = getString(R.string.windows_app_hook)
+                                    textColor = colorResource(R.color.colorTextGray)
+                                    textSize = 14f
+                                    updateTypeface(Typeface.BOLD)
+                                    alpha = 0.9f
+                                }
+                                TextView(
+                                    lparams = LayoutParams()
+                                ) {
+                                    windowsAppStatusLabel = this
+                                    text = if (isWindowsAppHookEnabled) "Enabled" else "Disabled"
+                                    textColor = colorResource(R.color.colorTextGray)
+                                    textSize = 12f
+                                    alpha = 0.85f
+                                    updateTypeface(Typeface.BOLD)
+                                    background = GradientDrawable().apply {
+                                        cornerRadius = 999f
+                                        setColor(ColorUtils.setAlphaComponent(colorResource(R.color.colorTextDark), 35))
+                                    }
+                                    updatePadding(left = 14.dp, top = 6.dp, right = 14.dp, bottom = 6.dp)
+                                }
+                            }
+
+                            // Description
+                            TextView(
+                                lparams = LayoutParams(widthMatchParent = true) {
+                                    bottomMargin = 12.dp
+                                }
+                            ) {
+                                text = getString(R.string.windows_app_hook_desc)
+                                textColor = colorResource(R.color.colorTextDark)
+                                textSize = 12f
+                                alpha = 0.7f
+                            }
+
+                            View(
+                                lparams = LayoutParams(widthMatchParent = true, height = 1.dp) {
+                                    bottomMargin = 16.dp
+                                }
+                            ) {
+                                setBackgroundColor(ColorUtils.setAlphaComponent(colorResource(R.color.colorTextDark), 24))
+                            }
+
+                            // Hide Soft Keyboard Switch
+                            LinearLayout(
+                                lparams = LayoutParams(widthMatchParent = true),
+                                init = {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    gravity = Gravity.CENTER_VERTICAL
+                                }
+                            ) {
+                                LinearLayout(
+                                    lparams = LayoutParams(widthMatchParent = true) {
+                                        weight = 1f
+                                        marginEnd = 12.dp
+                                    },
+                                    init = {
+                                        orientation = LinearLayout.VERTICAL
+                                    }
+                                ) {
+                                    TextView {
+                                        text = getString(R.string.hide_soft_keyboard_title)
+                                        textColor = colorResource(R.color.colorTextGray)
+                                        textSize = 16f
+                                    }
+                                    TextView(
+                                        lparams = LayoutParams {
+                                            topMargin = 4.dp
+                                        }
+                                    ) {
+                                        text = getString(R.string.hide_soft_keyboard_summary)
+                                        textColor = colorResource(R.color.colorTextDark)
+                                        textSize = 12f
+                                        alpha = 0.7f
+                                        setLineSpacing(4f, 1f)
+                                    }
+                                }
+                                MaterialSwitch(
+                                    lparams = LayoutParams()
+                                ) {
+                                    isChecked = isHideSoftKeyboardInitially
+                                    setOnCheckedChangeListener { button, checked ->
+                                        if (button.isPressed) {
+                                            hookWindowsAppPrefs.edit { putBoolean("hide_soft_keyboard", checked) }
+                                            updateWindowsAppStatus()
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Divider
+                            View(
+                                lparams = LayoutParams(widthMatchParent = true, height = 1.dp) {
+                                    topMargin = 16.dp
+                                    bottomMargin = 16.dp
+                                }
+                            ) {
+                                setBackgroundColor(ColorUtils.setAlphaComponent(colorResource(R.color.colorTextDark), 24))
+                            }
+
+                            // Force Scancode Switch
+                            LinearLayout(
+                                lparams = LayoutParams(widthMatchParent = true),
+                                init = {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    gravity = Gravity.CENTER_VERTICAL
+                                }
+                            ) {
+                                LinearLayout(
+                                    lparams = LayoutParams(widthMatchParent = true) {
+                                        weight = 1f
+                                        marginEnd = 12.dp
+                                    },
+                                    init = {
+                                        orientation = LinearLayout.VERTICAL
+                                    }
+                                ) {
+                                    TextView {
+                                        text = getString(R.string.force_scancode_title)
+                                        textColor = colorResource(R.color.colorTextGray)
+                                        textSize = 16f
+                                    }
+                                    TextView(
+                                        lparams = LayoutParams {
+                                            topMargin = 4.dp
+                                        }
+                                    ) {
+                                        text = getString(R.string.force_scancode_summary)
+                                        textColor = colorResource(R.color.colorTextDark)
+                                        textSize = 12f
+                                        alpha = 0.7f
+                                        setLineSpacing(4f, 1f)
+                                    }
+                                }
+                                MaterialSwitch(
+                                    lparams = LayoutParams()
+                                ) {
+                                    isChecked = isForceScancodeInitially
+                                    setOnCheckedChangeListener { button, checked ->
+                                        if (button.isPressed) {
+                                            hookWindowsAppPrefs.edit { putBoolean("force_scancode", checked) }
+                                            updateWindowsAppStatus()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         Space(lparams = LayoutParams(height = 24.dp))
                     }
                 }
             }
         }
+    }
+
+    private fun updateWindowsAppStatus() {
+        val hideSoftKeyboard = hookWindowsAppPrefs.getBoolean("hide_soft_keyboard", true)
+        val forceScancode = hookWindowsAppPrefs.getBoolean("force_scancode", true)
+        val isEnabled = hideSoftKeyboard || forceScancode
+        windowsAppStatusLabel?.text = if (isEnabled) "Enabled" else "Disabled"
     }
 }

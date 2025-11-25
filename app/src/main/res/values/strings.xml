@@ -24,4 +24,12 @@
     <string name="remote_desktop_apps">Remote Desktop Apps</string>
     <string name="other_apps">Other Apps</string>
     <string name="remote_desktop_badge">Remote Desktop</string>
+
+    <!-- Windows App Hook Settings -->
+    <string name="windows_app_hook">Windows App Hook</string>
+    <string name="windows_app_hook_desc">Enhance Microsoft Remote Desktop app experience</string>
+    <string name="hide_soft_keyboard_title">Hide Soft Keyboard</string>
+    <string name="hide_soft_keyboard_summary">Prevent soft keyboard from showing in Remote Desktop app</string>
+    <string name="force_scancode_title">Force Scancode Mode</string>
+    <string name="force_scancode_summary">Force enable scancode mode for better keyboard compatibility</string>
 </resources>

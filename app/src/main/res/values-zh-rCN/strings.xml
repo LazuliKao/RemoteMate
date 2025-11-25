@@ -25,4 +25,12 @@
     <string name="remote_desktop_apps">远程桌面应用</string>
     <string name="other_apps">其他应用</string>
     <string name="remote_desktop_badge">远程桌面</string>
+
+    <!-- Windows App Hook Settings -->
+    <string name="windows_app_hook">Windows 应用增强</string>
+    <string name="windows_app_hook_desc">增强微软远程桌面应用体验</string>
+    <string name="hide_soft_keyboard_title">隐藏软键盘</string>
+    <string name="hide_soft_keyboard_summary">阻止远程桌面应用中软键盘弹出</string>
+    <string name="force_scancode_title">强制 Scancode 模式</string>
+    <string name="force_scancode_summary">强制启用 Scancode 模式以获得更好的键盘兼容性</string>
 </resources>
