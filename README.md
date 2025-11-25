@@ -1,46 +1,84 @@
 # RemoteMate
 
-An Xposed module for enhanced remote desktop keyboard support.
+[English](#english) | [中文](README_zh.md)
 
-## Build
+---
 
-The project uses GitHub Actions for automated APK building. Every push to `main` or `develop` branch will automatically build both debug and release APKs.
+## English
 
-### Creating a Release
+An Xposed module that enhances remote desktop applications with advanced keyboard support and better user experience.
 
-To create a release, push a tag starting with `v`:
+### ✨ Features
 
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
+#### 🎹 Enhanced Keyboard Support
 
-This will:
-1. Build debug and release APKs
-2. Create a GitHub release with the tag name
-3. Upload the APKs to the release
+RemoteMate intercepts system-level keyboard events to provide seamless keyboard input in remote desktop applications, solving common keyboard compatibility issues.
 
-### Manual Build
+**Key Features:**
+- **System-level Keyboard Interception**: Bypass Android system shortcuts and deliver all key events directly to remote desktop apps
+- **External Keyboard Only Mode**: Option to intercept only external keyboard events, preserving built-in keyboard functionality
+- **Target App Filtering**: Selectively enable keyboard interception only when specific remote desktop apps are in foreground
+- **Customizable App List**: Choose which apps should trigger the keyboard enhancement
 
-To build locally:
+**Default Supported Apps:**
+- Microsoft Remote Desktop (androidx & android versions)
+- RealVNC Viewer
+- TeamViewer
 
-```bash
-# Debug APK
-./gradlew assembleDebug
+#### 🪟 Microsoft Remote Desktop Enhancements
 
-# Release APK
-./gradlew assembleRelease
-```
+Specialized optimizations for Microsoft Remote Desktop app:
 
-The built APKs will be in `app/build/outputs/apk/`.
+- **Hide Soft Keyboard**: Automatically prevents the soft keyboard from appearing, providing a cleaner desktop experience
+- **Force Scancode Mode**: Enables scancode keyboard mode for better key mapping compatibility with Windows systems
 
-### APK Signing
+### 📋 Requirements
 
-Release APKs are automatically signed when built. For detailed instructions on:
-- Setting up local signing for development
-- Configuring CI/CD signing with GitHub Secrets  
-- Verifying APK signatures
-- Troubleshooting signing issues
+- Android device with root access
+- Xposed Framework (LSPosed, EdXposed, or compatible)
+- Supported remote desktop application (see list above)
 
-Please refer to the [APK Signing Configuration Guide](docs/APK_SIGNING.md) (中文版本和English available).
+### 🚀 Installation
 
+1. Install an Xposed framework (LSPosed recommended)
+2. Download and install RemoteMate APK
+3. Enable the module in your Xposed manager
+4. Reboot your device
+5. Open RemoteMate to configure settings
+
+### ⚙️ Configuration
+
+Launch RemoteMate and configure:
+
+1. **Keyboard Hook Settings**:
+   - Enable/disable keyboard interception
+   - Toggle external keyboard only mode
+   - Enable/disable target app filtering
+   - Select which apps should trigger interception
+
+2. **Windows App Hook** (Microsoft Remote Desktop):
+   - Toggle soft keyboard hiding
+   - Toggle force scancode mode
+
+### 📖 Documentation
+
+- [Build Guide](docs/BUILD.md) - Instructions for building from source
+- [APK Signing Guide](docs/APK_SIGNING.md) - APK signing configuration
+
+### 🛠️ Technology Stack
+
+- **YukiHookAPI**: Modern Xposed development framework
+- **KavaRef**: Advanced Java reflection utilities
+- **Kotlin**: Primary development language
+
+### 📄 License
+
+See [LICENSE](LICENSE) file for details.
+
+### 🤝 Contributing
+
+Issues and pull requests are welcome!
+
+---
+
+**Note**: This module requires Xposed framework and root access. Use at your own risk.
