@@ -3,14 +3,32 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven("https://jitpack.io")
     }
 }
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://api.xposed.info/")
+        maven("https://jitpack.io")
+    }
+}
+
 plugins {
-    id("com.highcapable.sweetdependency") version "1.0.4"
-    id("com.highcapable.sweetproperty") version "1.0.5"
+    id("com.highcapable.gropify") version "1.0.1"
 }
-sweetProperty {
-    rootProject { all { isEnable = false } }
+
+gropify {
+    rootProject {
+        common {
+            isEnabled = false
+        }
+    }
 }
+
 rootProject.name = "RemoteMate"
+
 include(":app")

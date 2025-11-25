@@ -1,19 +1,22 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 plugins {
-    autowire(libs.plugins.android.application)
-    autowire(libs.plugins.kotlin.android)
-    autowire(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
-    namespace = property.project.app.packageName
-    compileSdk = property.project.android.compileSdk
+    namespace = gropify.project.app.packageName
+    compileSdk = gropify.project.android.compileSdk
 
     defaultConfig {
-        applicationId = property.project.app.packageName
-        minSdk = property.project.android.minSdk
-        targetSdk = property.project.android.targetSdk
-        versionName = property.project.app.versionName
-        versionCode = property.project.app.versionCode
+        applicationId = gropify.project.app.packageName
+        minSdk = gropify.project.android.minSdk
+        targetSdk = gropify.project.android.targetSdk
+        versionName = gropify.project.app.versionName
+        versionCode = gropify.project.app.versionCode
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -27,14 +30,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs = listOf(
-            "-Xno-param-assertions",
-            "-Xno-call-assertions",
-            "-Xno-receiver-assertions"
-        )
-    }
     buildFeatures {
         buildConfig = true
         viewBinding = true
@@ -46,36 +41,48 @@ android {
     // androidResources.additionalParameters += listOf("--allow-reserved-package-id", "--package-id", "0x64")
 }
 
+tasks.withType<KotlinJvmCompile>().configureEach {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
+        freeCompilerArgs.addAll(
+            "-Xno-param-assertions",
+            "-Xno-call-assertions",
+            "-Xno-receiver-assertions"
+        )
+    }
+}
+
 dependencies {
-    compileOnly(de.robv.android.xposed.api)
-    ksp(com.highcapable.yukihookapi.ksp.xposed)
-    implementation(com.highcapable.yukihookapi.api)
+    compileOnly(libs.rovo89.xposed.api)
+    ksp(libs.yukihookapi.ksp.xposed)
+    implementation(libs.yukihookapi)
 
     // Optional: KavaRef (https://github.com/HighCapable/KavaRef)
-    implementation(com.highcapable.kavaref.kavaref.core)
-    implementation(com.highcapable.kavaref.kavaref.extension)
+    implementation(libs.kavaref.core)
+    implementation(libs.kavaref.extension)
 
     // Optional: Hikage (https://github.com/BetterAndroid/Hikage)
-    ksp(com.highcapable.hikage.hikage.compiler)
-    implementation(com.highcapable.hikage.hikage.core)
-    implementation(com.highcapable.hikage.hikage.extension)
-    implementation(com.highcapable.hikage.hikage.widget.androidx)
-    implementation(com.highcapable.hikage.hikage.widget.material)
+    ksp(libs.hikage.compiler)
+    implementation(libs.hikage.core)
+    implementation(libs.hikage.extension)
+    implementation(libs.hikage.widget.androidx)
+    implementation(libs.hikage.widget.material)
 
     // Optional: BetterAndroid (https://github.com/BetterAndroid/BetterAndroid)
-    implementation(com.highcapable.betterandroid.ui.component)
-    implementation(com.highcapable.betterandroid.ui.extension)
-    implementation(com.highcapable.betterandroid.system.extension)
+    implementation(libs.betterandroid.ui.component)
+    implementation(libs.betterandroid.ui.component.adapter)
+    implementation(libs.betterandroid.ui.extension)
+    implementation(libs.betterandroid.system.extension)
 
-    implementation(com.github.duanhong169.drawabletoolbox)
+    implementation(libs.drawabletoolbox)
 
-    implementation(androidx.core.core.ktx)
-    implementation(androidx.appcompat.appcompat)
-    implementation(androidx.constraintlayout.constraintlayout)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
 
-    implementation(com.google.android.material.material)
+    implementation(libs.material)
 
-    testImplementation(junit.junit)
-    androidTestImplementation(androidx.test.ext.junit)
-    androidTestImplementation(androidx.test.espresso.espresso.core)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
 }

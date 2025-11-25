@@ -6,7 +6,7 @@ import com.highcapable.yukihookapi.hook.param.PackageParam
 interface IHookModule {
     fun onLoad(env: PackageParam)
     val enableLog: Boolean
-        get() = true
+        get() = false
 
     fun logDebug(message: String) {
         if (enableLog) YLog.debug(message)
