@@ -2,6 +2,7 @@
 
 package io.github.lazulikao.remotemate.ui.activity
 
+import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -9,9 +10,11 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.updatePadding
 import io.github.lazulikao.remotemate.R
+import io.github.lazulikao.remotemate.hook.modules.HookKeyboard
 import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
 import com.highcapable.betterandroid.ui.extension.component.base.getThemeAttrsDrawable
 import com.highcapable.betterandroid.ui.extension.view.textColor
@@ -30,6 +33,31 @@ class SettingActivity : AppViewsActivity() {
 
     private val hookKeyboardPrefs by lazy { prefs("hook_keyboard") }
     private var hookStatusLabel: TextView? = null
+    private var targetAppsLabel: TextView? = null
+
+    private val appSelectorLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            updateTargetAppsLabel()
+        }
+    }
+
+    private fun getEnabledTargetPackages(): Set<String> {
+        val saved = hookKeyboardPrefs.getString("target_packages", "")
+        return if (saved.isBlank()) HookKeyboard.DEFAULT_TARGET_PACKAGES
+        else saved.split(",").filter { it.isNotBlank() }.toSet()
+    }
+
+    private fun updateTargetAppsLabel() {
+        val count = getEnabledTargetPackages().size
+        targetAppsLabel?.text = getString(R.string.selected_apps_count, count)
+    }
+
+    private fun openAppSelector() {
+        val intent = Intent(this, AppSelectorActivity::class.java)
+        appSelectorLauncher.launch(intent)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -329,6 +357,73 @@ class SettingActivity : AppViewsActivity() {
                                             hookKeyboardPrefs.edit { putBoolean("target_app_only", checked) }
                                         }
                                     }
+                                }
+                            }
+
+                            // Divider
+                            View(
+                                lparams = LayoutParams(widthMatchParent = true, height = 1.dp) {
+                                    topMargin = 16.dp
+                                    bottomMargin = 16.dp
+                                }
+                            ) {
+                                setBackgroundColor(ColorUtils.setAlphaComponent(colorResource(R.color.colorTextDark), 24))
+                            }
+
+                            // Target Apps Selection
+                            LinearLayout(
+                                lparams = LayoutParams(widthMatchParent = true),
+                                init = {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    gravity = Gravity.CENTER_VERTICAL
+                                    background = getThemeAttrsDrawable(Android_R.attr.selectableItemBackground)
+                                    setOnClickListener { openAppSelector() }
+                                }
+                            ) {
+                                LinearLayout(
+                                    lparams = LayoutParams(widthMatchParent = true) {
+                                        weight = 1f
+                                        marginEnd = 12.dp
+                                    },
+                                    init = {
+                                        orientation = LinearLayout.VERTICAL
+                                    }
+                                ) {
+                                    TextView {
+                                        text = getString(R.string.select_target_apps_title)
+                                        textColor = colorResource(R.color.colorTextGray)
+                                        textSize = 16f
+                                    }
+                                    TextView(
+                                        lparams = LayoutParams {
+                                            topMargin = 4.dp
+                                        }
+                                    ) {
+                                        text = getString(R.string.select_target_apps_summary)
+                                        textColor = colorResource(R.color.colorTextDark)
+                                        textSize = 12f
+                                        alpha = 0.7f
+                                        setLineSpacing(4f, 1f)
+                                    }
+                                }
+                                TextView(
+                                    lparams = LayoutParams()
+                                ) {
+                                    targetAppsLabel = this
+                                    val count = getEnabledTargetPackages().size
+                                    text = getString(R.string.selected_apps_count, count)
+                                    textColor = colorResource(R.color.colorTextGray)
+                                    textSize = 12f
+                                    alpha = 0.85f
+                                }
+                                ImageView(
+                                    lparams = LayoutParams(20.dp, 20.dp) {
+                                        marginStart = 8.dp
+                                    }
+                                ) {
+                                    setImageResource(R.drawable.ic_chevron_right)
+                                    imageTintList = stateColorResource(R.color.colorTextGray)
+                                    alpha = 0.6f
                                 }
                             }
                         }

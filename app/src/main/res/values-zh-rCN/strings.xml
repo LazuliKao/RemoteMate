@@ -15,5 +15,14 @@
     <string name="external_only_title">仅外接键盘</string>
     <string name="external_only_summary">仅拦截外接键盘的事件，忽略内置键盘</string>
     <string name="target_app_only_title">仅目标应用</string>
-    <string name="target_app_only_summary">仅在微软远程桌面处于前台时拦截键盘事件</string>
+    <string name="target_app_only_summary">仅在目标远程桌面应用处于前台时拦截键盘事件</string>
+    <string name="select_target_apps_title">选择目标应用</string>
+    <string name="select_target_apps_summary">选择哪些应用应触发键盘拦截</string>
+    <string name="target_apps_count">%1$d / %2$d</string>
+    <string name="selected_apps_count">已选择 %1$d 个</string>
+    <string name="save">保存</string>
+    <string name="loading_apps">正在加载应用…</string>
+    <string name="remote_desktop_apps">远程桌面应用</string>
+    <string name="other_apps">其他应用</string>
+    <string name="remote_desktop_badge">远程桌面</string>
 </resources>

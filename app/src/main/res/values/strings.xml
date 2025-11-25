@@ -14,5 +14,14 @@
     <string name="external_only_title">External Keyboard Only</string>
     <string name="external_only_summary">Only intercept events from external keyboards, ignore built-in keyboard</string>
     <string name="target_app_only_title">Target App Only</string>
-    <string name="target_app_only_summary">Only intercept when Microsoft Remote Desktop is in foreground</string>
+    <string name="target_app_only_summary">Only intercept when target remote desktop app is in foreground</string>
+    <string name="select_target_apps_title">Select Target Apps</string>
+    <string name="select_target_apps_summary">Choose which apps should trigger keyboard interception</string>
+    <string name="target_apps_count">%1$d / %2$d</string>
+    <string name="selected_apps_count">%1$d selected</string>
+    <string name="save">Save</string>
+    <string name="loading_apps">Loading apps…</string>
+    <string name="remote_desktop_apps">Remote Desktop Apps</string>
+    <string name="other_apps">Other Apps</string>
+    <string name="remote_desktop_badge">Remote Desktop</string>
 </resources>
