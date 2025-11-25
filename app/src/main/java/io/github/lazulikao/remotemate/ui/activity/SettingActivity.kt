@@ -2,17 +2,17 @@
 
 package io.github.lazulikao.remotemate.ui.activity
 
+import android.graphics.Typeface
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
-import androidx.core.view.updateMargins
 import androidx.core.view.updatePadding
 import io.github.lazulikao.remotemate.R
 import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
 import com.highcapable.betterandroid.ui.extension.component.base.getThemeAttrsDrawable
 import com.highcapable.betterandroid.ui.extension.view.textColor
+import com.highcapable.betterandroid.ui.extension.view.updateTypeface
 import com.highcapable.hikage.extension.setContentView
 import com.highcapable.hikage.widget.android.widget.ImageView
 import com.highcapable.hikage.widget.android.widget.LinearLayout
@@ -20,14 +20,16 @@ import com.highcapable.hikage.widget.android.widget.Space
 import com.highcapable.hikage.widget.android.widget.TextView
 import com.highcapable.hikage.widget.androidx.core.widget.NestedScrollView
 import com.highcapable.hikage.widget.io.github.lazulikao.remotemate.ui.view.MaterialSwitch
+import com.highcapable.yukihookapi.hook.factory.prefs
 import android.R as Android_R
 
 class SettingActivity : AppViewsActivity() {
 
+    private val hookKeyboardPrefs by lazy { prefs("hook_keyboard") }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Base activity background
         findViewById<View>(Android_R.id.content).setBackgroundResource(R.color.colorThemeBackground)
 
         setContentView {
@@ -41,43 +43,34 @@ class SettingActivity : AppViewsActivity() {
                 LinearLayout(
                     lparams = LayoutParams(widthMatchParent = true),
                     init = {
-                        gravity = Gravity.CENTER or Gravity.START
-                        updatePadding( 15.dp)
-                        updatePadding(top = 13.dp, bottom = 5.dp)
+                        gravity = Gravity.CENTER_VERTICAL
+                        updatePadding(left = 16.dp, right = 16.dp, top = 16.dp, bottom = 8.dp)
                     }
                 ) {
                     ImageView(
-                        lparams = LayoutParams(27.dp, 27.dp) {
-                            marginEnd = 10.dp
+                        lparams = LayoutParams(28.dp, 28.dp) {
+                            marginEnd = 12.dp
                         }
                     ) {
                         background = getThemeAttrsDrawable(Android_R.attr.selectableItemBackgroundBorderless)
-                        alpha = 0.85f
                         setImageResource(Android_R.drawable.ic_menu_revert)
                         imageTintList = stateColorResource(R.color.colorTextGray)
-                        setOnClickListener {
-                            finish()
-                        }
+                        setOnClickListener { finish() }
                     }
-                    TextView(
-                        lparams = LayoutParams {
-                            weight = 1f
-                        }
-                    ) {
-                        isSingleLine = true
+                    TextView {
                         text = getString(R.string.settings)
                         textColor = colorResource(R.color.colorTextGray)
-                        textSize = 25f
+                        textSize = 22f
+                        updateTypeface(Typeface.BOLD)
                     }
                 }
 
                 NestedScrollView(
-                    lparams = LayoutParams(matchParent = true) {
-                        updateMargins(10.dp)
-                    },
+                    lparams = LayoutParams(matchParent = true),
                     init = {
                         isFillViewport = true
-                        isVerticalFadingEdgeEnabled = true
+                        clipToPadding = false
+                        updatePadding(left = 16.dp, right = 16.dp, bottom = 24.dp)
                     }
                 ) {
                     LinearLayout(
@@ -86,236 +79,91 @@ class SettingActivity : AppViewsActivity() {
                             orientation = LinearLayout.VERTICAL
                         }
                     ) {
-                        // Remote control settings
+                        Space(lparams = LayoutParams(height = 8.dp))
+
+                        // Keyboard Hook Settings Card
                         LinearLayout(
-                            lparams = LayoutParams(widthMatchParent = true) {
-                                updateMargins( 15.dp)
-                            },
+                            lparams = LayoutParams(widthMatchParent = true),
                             init = {
                                 orientation = LinearLayout.VERTICAL
-                                gravity = Gravity.CENTER or Gravity.START
                                 setBackgroundResource(R.drawable.bg_permotion_round)
-                                updatePadding(left = 15.dp, top = 15.dp, right = 15.dp)
+                                updatePadding(16.dp)
                             }
                         ) {
+                            // Card header
                             LinearLayout(
-                                lparams = LayoutParams(widthMatchParent = true),
+                                lparams = LayoutParams(widthMatchParent = true) {
+                                    bottomMargin = 12.dp
+                                },
                                 init = {
-                                    gravity = Gravity.CENTER or Gravity.START
+                                    gravity = Gravity.CENTER_VERTICAL
                                 }
                             ) {
                                 ImageView(
-                                    lparams = LayoutParams(15.dp, 15.dp) {
+                                    lparams = LayoutParams(18.dp, 18.dp) {
                                         marginEnd = 10.dp
                                     }
                                 ) {
-                                    setImageResource(Android_R.drawable.ic_menu_manage)
+                                    setImageResource(Android_R.drawable.ic_dialog_dialer)
                                     imageTintList = stateColorResource(R.color.colorTextGray)
+                                    alpha = 0.8f
                                 }
-                                TextView(
-                                    lparams = LayoutParams(widthMatchParent = true)
-                                ) {
-                                    alpha = 0.85f
-                                    isSingleLine = true
-                                    text = "Remote Control Settings"
+                                TextView {
+                                    text = "Keyboard Hook"
                                     textColor = colorResource(R.color.colorTextGray)
-                                    textSize = 12f
+                                    textSize = 14f
+                                    updateTypeface(Typeface.BOLD)
+                                    alpha = 0.9f
                                 }
                             }
-                            
-                            MaterialSwitch(
-                                lparams = LayoutParams(widthMatchParent = true)
-                            ) {
-                                text = "Enable Remote Control"
-                                isAllCaps = false
-                                textColor = colorResource(R.color.colorTextGray)
-                                textSize = 15f
-                                isChecked = true // Default checked
-                                setOnCheckedChangeListener { button, isChecked ->
-                                    if (button.isPressed) {
-                                        // Handle remote control toggle
-                                    }
-                                }
-                            }
-                            
-                            TextView(
-                                lparams = LayoutParams(widthMatchParent = true) {
-                                    bottomMargin = 10.dp
-                                }
-                            ) {
-                                alpha = 0.6f
-                                setLineSpacing(6f, 1f)
-                                text = "Enable or disable remote control functionality"
-                                textColor = colorResource(R.color.colorTextDark)
-                                textSize = 12f
-                            }
-                        }
-
-                        Space(lparams = LayoutParams(height = 15.dp))
-
-                        // Keyboard settings
-                        LinearLayout(
-                            lparams = LayoutParams(widthMatchParent = true) {
-                                updateMargins( 15.dp)
-                            },
-                            init = {
-                                orientation = LinearLayout.VERTICAL
-                                gravity = Gravity.CENTER or Gravity.START
-                                setBackgroundResource(R.drawable.bg_permotion_round)
-                                updatePadding(left = 15.dp, top = 15.dp, right = 15.dp)
-                            }
-                        ) {
+                            // Switch item
                             LinearLayout(
                                 lparams = LayoutParams(widthMatchParent = true),
                                 init = {
-                                    gravity = Gravity.CENTER or Gravity.START
+                                    orientation = LinearLayout.HORIZONTAL
+                                    gravity = Gravity.CENTER_VERTICAL
                                 }
                             ) {
-                                ImageView(
-                                    lparams = LayoutParams(15.dp, 15.dp) {
-                                        marginEnd = 10.dp
+                                LinearLayout(
+                                    lparams = LayoutParams(widthMatchParent = true) {
+                                        weight = 1f
+                                        marginEnd = 12.dp
+                                    },
+                                    init = {
+                                        orientation = LinearLayout.VERTICAL
                                     }
                                 ) {
-                                    setImageResource(Android_R.drawable.ic_dialog_info)
-                                    imageTintList = stateColorResource(R.color.colorTextGray)
+                                    TextView {
+                                        text = "Enable Keyboard Hook"
+                                        textColor = colorResource(R.color.colorTextGray)
+                                        textSize = 16f
+                                    }
+                                    TextView(
+                                        lparams = LayoutParams {
+                                            topMargin = 4.dp
+                                        }
+                                    ) {
+                                        text = "Intercept external keyboard input to prevent system shortcuts from being triggered"
+                                        textColor = colorResource(R.color.colorTextDark)
+                                        textSize = 12f
+                                        alpha = 0.7f
+                                        setLineSpacing(4f, 1f)
+                                    }
                                 }
-                                TextView(
-                                    lparams = LayoutParams(widthMatchParent = true)
+                                MaterialSwitch(
+                                    lparams = LayoutParams()
                                 ) {
-                                    alpha = 0.85f
-                                    isSingleLine = true
-                                    text = "Keyboard Settings"
-                                    textColor = colorResource(R.color.colorTextGray)
-                                    textSize = 12f
-                                }
-                            }
-                            
-                            MaterialSwitch(
-                                lparams = LayoutParams(widthMatchParent = true)
-                            ) {
-                                text = "Hook Keyboard Input"
-                                isAllCaps = false
-                                textColor = colorResource(R.color.colorTextGray)
-                                textSize = 15f
-                                isChecked = true
-                                setOnCheckedChangeListener { button, isChecked ->
-                                    if (button.isPressed) {
-                                        // Handle keyboard hook toggle
+                                    isChecked = hookKeyboardPrefs.getBoolean("enable_hook_keyboard", false)
+                                    setOnCheckedChangeListener { button, checked ->
+                                        if (button.isPressed) {
+                                            hookKeyboardPrefs.edit { putBoolean("enable_hook_keyboard", checked) }
+                                        }
                                     }
                                 }
-                            }
-                            
-                            MaterialSwitch(
-                                lparams = LayoutParams(widthMatchParent = true)
-                            ) {
-                                text = "Enable Special Keys"
-                                isAllCaps = false
-                                textColor = colorResource(R.color.colorTextGray)
-                                textSize = 15f
-                                isChecked = false
-                                setOnCheckedChangeListener { button, isChecked ->
-                                    if (button.isPressed) {
-                                        // Handle special keys toggle
-                                    }
-                                }
-                            }
-                            
-                            TextView(
-                                lparams = LayoutParams(widthMatchParent = true) {
-                                    bottomMargin = 10.dp
-                                }
-                            ) {
-                                alpha = 0.6f
-                                setLineSpacing(6f, 1f)
-                                text = "Configure keyboard input hooking and special key support"
-                                textColor = colorResource(R.color.colorTextDark)
-                                textSize = 12f
                             }
                         }
 
-                        Space(lparams = LayoutParams(height = 15.dp))
-
-                        // Advanced settings
-                        LinearLayout(
-                            lparams = LayoutParams(widthMatchParent = true) {
-                                updateMargins(15.dp)
-                            },
-                            init = {
-                                orientation = LinearLayout.VERTICAL
-                                gravity = Gravity.CENTER or Gravity.START
-                                setBackgroundResource(R.drawable.bg_permotion_round)
-                                updatePadding(left = 15.dp, top = 15.dp, right = 15.dp)
-                            }
-                        ) {
-                            LinearLayout(
-                                lparams = LayoutParams(widthMatchParent = true),
-                                init = {
-                                    gravity = Gravity.CENTER or Gravity.START
-                                }
-                            ) {
-                                ImageView(
-                                    lparams = LayoutParams(15.dp, 15.dp) {
-                                        marginEnd = 10.dp
-                                    }
-                                ) {
-                                    setImageResource(Android_R.drawable.ic_menu_preferences)
-                                    imageTintList = stateColorResource(R.color.colorTextGray)
-                                }
-                                TextView(
-                                    lparams = LayoutParams(widthMatchParent = true)
-                                ) {
-                                    alpha = 0.85f
-                                    isSingleLine = true
-                                    text = "Advanced Settings"
-                                    textColor = colorResource(R.color.colorTextGray)
-                                    textSize = 12f
-                                }
-                            }
-                            
-                            MaterialSwitch(
-                                lparams = LayoutParams(widthMatchParent = true)
-                            ) {
-                                text = "Debug Mode"
-                                isAllCaps = false
-                                textColor = colorResource(R.color.colorTextGray)
-                                textSize = 15f
-                                isChecked = false
-                                setOnCheckedChangeListener { button, isChecked ->
-                                    if (button.isPressed) {
-                                        // Handle debug mode toggle
-                                    }
-                                }
-                            }
-                            
-                            MaterialSwitch(
-                                lparams = LayoutParams(widthMatchParent = true)
-                            ) {
-                                text = "Auto Start Service"
-                                isAllCaps = false
-                                textColor = colorResource(R.color.colorTextGray)
-                                textSize = 15f
-                                isChecked = true
-                                setOnCheckedChangeListener { button, isChecked ->
-                                    if (button.isPressed) {
-                                        // Handle auto start toggle
-                                    }
-                                }
-                            }
-                            
-                            TextView(
-                                lparams = LayoutParams(widthMatchParent = true) {
-                                    bottomMargin = 10.dp
-                                }
-                            ) {
-                                alpha = 0.6f
-                                setLineSpacing(6f, 1f)
-                                text = "Advanced options for power users"
-                                textColor = colorResource(R.color.colorTextDark)
-                                textSize = 12f
-                            }
-                        }
-
-                        Space(lparams = LayoutParams(height = 20.dp))
+                        Space(lparams = LayoutParams(height = 24.dp))
                     }
                 }
             }
