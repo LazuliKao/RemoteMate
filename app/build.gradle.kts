@@ -57,9 +57,10 @@ android {
                 "proguard-rules.pro"
             )
 
-            // Apply signing config if available
-            if (signingConfigs.getByName("release").storeFile != null) {
-                signingConfig = signingConfigs.getByName("release")
+            // Apply signing config if available and keystore file exists
+            val releaseSigningConfig = signingConfigs.getByName("release")
+            if (releaseSigningConfig.storeFile?.exists() == true) {
+                signingConfig = releaseSigningConfig
             }
         }
     }
