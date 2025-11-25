@@ -8,7 +8,13 @@
 
 ### Automated Build (GitHub Actions)
 
-The project uses GitHub Actions for automated APK building. Every push to `main` or `develop` branch will automatically build both debug and release APKs.
+The project uses GitHub Actions for automated APK building. Every push to any branch will automatically build both debug and signed release APKs (except for Pull Requests, which build unsigned releases for security).
+
+#### Build Behavior
+
+- **Push to any branch**: Builds debug + signed release APKs
+- **Pull Requests**: Builds debug + unsigned release APKs (for security)
+- **Tags**: Builds signed APKs + creates GitHub release
 
 #### Creating a Release
 
@@ -20,7 +26,7 @@ git push origin v1.0.0
 ```
 
 This will:
-1. Build debug and release APKs
+1. Build debug and signed release APKs
 2. Create a GitHub release with the tag name
 3. Upload the APKs to the release
 
@@ -40,7 +46,7 @@ The built APKs will be in `app/build/outputs/apk/`.
 
 ### APK Signing
 
-Release APKs are automatically signed when built. For detailed instructions on:
+Release APKs are automatically signed in CI/CD for all builds except Pull Requests. For detailed instructions on:
 - Setting up local signing for development
 - Configuring CI/CD signing with GitHub Secrets  
 - Verifying APK signatures
@@ -48,13 +54,21 @@ Release APKs are automatically signed when built. For detailed instructions on:
 
 Please refer to the [APK Signing Configuration Guide](APK_SIGNING.md).
 
+**Note**: Pull Request builds produce unsigned release APKs to protect signing credentials.
+
 ---
 
 ## 中文
 
 ### 自动构建 (GitHub Actions)
 
-项目使用 GitHub Actions 进行自动化 APK 构建。每次推送到 `main` 或 `develop` 分支都会自动构建 debug 和 release 版本的 APK。
+项目使用 GitHub Actions 进行自动化 APK 构建。推送到任何分支都会自动构建 debug 和已签名的 release APK（Pull Request 除外，出于安全考虑会构建未签名的 release 版本）。
+
+#### 构建行为
+
+- **推送到任何分支**：构建 debug + 已签名的 release APK
+- **Pull Requests**：构建 debug + 未签名的 release APK（出于安全考虑）
+- **标签**：构建已签名的 APK + 创建 GitHub 发行版
 
 #### 创建发行版
 
@@ -66,7 +80,7 @@ git push origin v1.0.0
 ```
 
 这将会：
-1. 构建 debug 和 release APK
+1. 构建 debug 和已签名的 release APK
 2. 使用标签名称创建 GitHub 发行版
 3. 将 APK 上传到发行版
 
@@ -86,10 +100,12 @@ git push origin v1.0.0
 
 ### APK 签名
 
-Release 版本 APK 在构建时会自动签名。有关以下内容的详细说明：
+Release 版本 APK 在 CI/CD 中会自动签名（Pull Request 除外）。有关以下内容的详细说明：
 - 配置开发环境的本地签名
 - 配置 GitHub Secrets 用于 CI/CD 签名
 - 验证 APK 签名
 - 故障排除
 
 请参阅 [APK 签名配置指南](APK_SIGNING.md)。
+
+**注意**：Pull Request 构建会生成未签名的 release APK，以保护签名凭据。

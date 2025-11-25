@@ -29,11 +29,10 @@ android {
             keyAlias = System.getenv("KEY_ALIAS")
             keyPassword = System.getenv("KEY_PASSWORD")
 
-            // For local builds: Load from local.properties file
+            // For local builds: Load from keystore.properties file
             if (storeFile == null) {
                 val keystorePropertiesFile = rootProject.file("keystore.properties")
                 if (keystorePropertiesFile.exists()) {
-
                     val keystoreProperties = Properties()
                     keystoreProperties.load(keystorePropertiesFile.inputStream())
 

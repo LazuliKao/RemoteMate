@@ -84,7 +84,7 @@ Add the following secrets in your GitHub repository settings:
 
 Once configured, APKs will be automatically signed in:
 
-- 推送到 `main` 分支 / Pushes to `main` branch
+- 推送到任何分支 / Pushes to any branch
 - 创建标签 / Creating tags (for releases)
 
 Pull Request中不会进行签名，以保护密钥安全。

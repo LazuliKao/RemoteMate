@@ -3,8 +3,7 @@ name: Build APK
 on:
   push:
     branches:
-      - main
-      - develop
+      - '**'
     tags:
       - 'v*'
   pull_request:
@@ -32,19 +31,22 @@ jobs:
         run: chmod +x gradlew
       
       - name: Decode keystore
-        if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ github.event_name != 'pull_request' }}
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
       
       - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
       
-      - name: Build Release APK
+      - name: Build Release APK (Unsigned)
+        if: ${{ github.event_name == 'pull_request' }}
+        run: ./gradlew assembleRelease --stacktrace
+      
+      - name: Build Release APK (Signed)
+        if: ${{ github.event_name != 'pull_request' }}
         run: ./gradlew assembleRelease --stacktrace
         env:
-          KEYSTORE_FILE: ${{ github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && 'keystore.jks' || '' }}
+          KEYSTORE_FILE: keystore.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
