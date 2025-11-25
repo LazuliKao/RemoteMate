@@ -19,11 +19,43 @@ android {
         versionCode = gropify.project.app.versionCode
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    
+    signingConfigs {
+        create("release") {
+            // For CI/CD: These values are provided via environment variables
+            storeFile = System.getenv("KEYSTORE_FILE")?.let { file(it) }
+            storePassword = System.getenv("KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("KEY_ALIAS")
+            keyPassword = System.getenv("KEY_PASSWORD")
+            
+            // For local builds: Load from local.properties file
+            if (storeFile == null) {
+                val keystorePropertiesFile = rootProject.file("keystore.properties")
+                if (keystorePropertiesFile.exists()) {
+                    val keystoreProperties = java.util.Properties()
+                    keystoreProperties.load(keystorePropertiesFile.inputStream())
+                    
+                    keystoreProperties.getProperty("storeFile")?.let {
+                        storeFile = rootProject.file(it)
+                    }
+                    storePassword = keystoreProperties.getProperty("storePassword")
+                    keyAlias = keystoreProperties.getProperty("keyAlias")
+                    keyPassword = keystoreProperties.getProperty("keyPassword")
+                }
+            }
+        }
+    }
+    
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            
+            // Apply signing config if available
+            if (signingConfigs.getByName("release").storeFile != null) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
     compileOptions {
