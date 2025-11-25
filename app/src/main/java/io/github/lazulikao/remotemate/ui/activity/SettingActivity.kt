@@ -3,10 +3,13 @@
 package io.github.lazulikao.remotemate.ui.activity
 
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.updatePadding
 import io.github.lazulikao.remotemate.R
 import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
@@ -26,6 +29,7 @@ import android.R as Android_R
 class SettingActivity : AppViewsActivity() {
 
     private val hookKeyboardPrefs by lazy { prefs("hook_keyboard") }
+    private var hookStatusLabel: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +37,7 @@ class SettingActivity : AppViewsActivity() {
         findViewById<View>(Android_R.id.content).setBackgroundResource(R.color.colorThemeBackground)
 
         setContentView {
+            val isHookEnabledInitially = hookKeyboardPrefs.getBoolean("enable_hook_keyboard", false)
             LinearLayout(
                 lparams = LayoutParams(matchParent = true),
                 init = {
@@ -53,7 +58,7 @@ class SettingActivity : AppViewsActivity() {
                         }
                     ) {
                         background = getThemeAttrsDrawable(Android_R.attr.selectableItemBackgroundBorderless)
-                        setImageResource(Android_R.drawable.ic_menu_revert)
+                        setImageResource(Android_R.drawable.ic_menu_close_clear_cancel)
                         imageTintList = stateColorResource(R.color.colorTextGray)
                         setOnClickListener { finish() }
                     }
@@ -64,13 +69,26 @@ class SettingActivity : AppViewsActivity() {
                         updateTypeface(Typeface.BOLD)
                     }
                 }
+                TextView(
+                    lparams = LayoutParams(widthMatchParent = true) {
+                        leftMargin = 16.dp
+                        rightMargin = 16.dp
+                        bottomMargin = 12.dp
+                    }
+                ) {
+                    text = "Tune how RemoteMate handles hardware keyboard input on this device"
+                    textColor = colorResource(R.color.colorTextDark)
+                    textSize = 13f
+                    alpha = 0.75f
+                    setLineSpacing(4f, 1f)
+                }
 
                 NestedScrollView(
                     lparams = LayoutParams(matchParent = true),
                     init = {
                         isFillViewport = true
                         clipToPadding = false
-                        updatePadding(left = 16.dp, right = 16.dp, bottom = 24.dp)
+                        updatePadding(left = 16.dp, top = 4.dp, right = 16.dp, bottom = 24.dp)
                     }
                 ) {
                     LinearLayout(
@@ -87,7 +105,8 @@ class SettingActivity : AppViewsActivity() {
                             init = {
                                 orientation = LinearLayout.VERTICAL
                                 setBackgroundResource(R.drawable.bg_permotion_round)
-                                updatePadding(16.dp)
+                                updatePadding(left = 20.dp, top = 20.dp, right = 20.dp, bottom = 20.dp)
+                                elevation = 6f
                             }
                         ) {
                             // Card header
@@ -99,22 +118,58 @@ class SettingActivity : AppViewsActivity() {
                                     gravity = Gravity.CENTER_VERTICAL
                                 }
                             ) {
-                                ImageView(
-                                    lparams = LayoutParams(18.dp, 18.dp) {
-                                        marginEnd = 10.dp
+                                LinearLayout(
+                                    lparams = LayoutParams(40.dp, 40.dp) {
+                                        marginEnd = 12.dp
+                                    },
+                                    init = {
+                                        gravity = Gravity.CENTER
+                                        background = GradientDrawable().apply {
+                                            cornerRadius = 20.dp.toFloat()
+                                            setColor(ColorUtils.setAlphaComponent(colorResource(R.color.colorTextDark), 30))
+                                        }
                                     }
                                 ) {
-                                    setImageResource(Android_R.drawable.ic_dialog_dialer)
-                                    imageTintList = stateColorResource(R.color.colorTextGray)
-                                    alpha = 0.8f
+                                    ImageView(
+                                        lparams = LayoutParams(18.dp, 18.dp)
+                                    ) {
+                                        setImageResource(Android_R.drawable.ic_dialog_dialer)
+                                        imageTintList = stateColorResource(R.color.colorTextGray)
+                                    }
                                 }
-                                TextView {
+                                TextView(
+                                    lparams = LayoutParams {
+                                        weight = 1f
+                                    }
+                                ) {
                                     text = "Keyboard Hook"
                                     textColor = colorResource(R.color.colorTextGray)
                                     textSize = 14f
                                     updateTypeface(Typeface.BOLD)
                                     alpha = 0.9f
                                 }
+                                TextView(
+                                    lparams = LayoutParams()
+                                ) {
+                                    hookStatusLabel = this
+                                    text = if (isHookEnabledInitially) "Enabled" else "Disabled"
+                                    textColor = colorResource(R.color.colorTextGray)
+                                    textSize = 12f
+                                    alpha = 0.85f
+                                    updateTypeface(Typeface.BOLD)
+                                    background = GradientDrawable().apply {
+                                        cornerRadius = 999f
+                                        setColor(ColorUtils.setAlphaComponent(colorResource(R.color.colorTextDark), 35))
+                                    }
+                                    updatePadding(left = 14.dp, top = 6.dp, right = 14.dp, bottom = 6.dp)
+                                }
+                            }
+                            View(
+                                lparams = LayoutParams(widthMatchParent = true, height = 1.dp) {
+                                    bottomMargin = 16.dp
+                                }
+                            ) {
+                                setBackgroundColor(ColorUtils.setAlphaComponent(colorResource(R.color.colorTextDark), 24))
                             }
                             // Switch item
                             LinearLayout(
@@ -153,11 +208,12 @@ class SettingActivity : AppViewsActivity() {
                                 MaterialSwitch(
                                     lparams = LayoutParams()
                                 ) {
-                                    isChecked = hookKeyboardPrefs.getBoolean("enable_hook_keyboard", false)
+                                    isChecked = isHookEnabledInitially
                                     setOnCheckedChangeListener { button, checked ->
                                         if (button.isPressed) {
                                             hookKeyboardPrefs.edit { putBoolean("enable_hook_keyboard", checked) }
                                         }
+                                        hookStatusLabel?.text = if (checked) "Enabled" else "Disabled"
                                     }
                                 }
                             }
