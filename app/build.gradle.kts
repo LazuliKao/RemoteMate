@@ -24,26 +24,26 @@ android {
     signingConfigs {
         create("release") {
             // For CI/CD: These values are provided via environment variables
-            storeFile = System.getenv("KEYSTORE_FILE")?.let { file(it) }
-            storePassword = System.getenv("KEYSTORE_PASSWORD")
-            keyAlias = System.getenv("KEY_ALIAS")
-            keyPassword = System.getenv("KEY_PASSWORD")
+            val envKeystoreFile = System.getenv("KEYSTORE_FILE")
+            val envKeystorePassword = System.getenv("KEYSTORE_PASSWORD")
+            val envKeyAlias = System.getenv("KEY_ALIAS")
+            val envKeyPassword = System.getenv("KEY_PASSWORD")
 
             // For local builds: Load from keystore.properties file
-            if (storeFile == null) {
-                val keystorePropertiesFile = rootProject.file("keystore.properties")
-                if (keystorePropertiesFile.exists()) {
-                    val keystoreProperties = Properties()
-                    keystoreProperties.load(keystorePropertiesFile.inputStream())
-
-                    keystoreProperties.getProperty("storeFile")?.let {
-                        storeFile = rootProject.file(it)
-                    }
-                    storePassword = keystoreProperties.getProperty("storePassword")
-                    keyAlias = keystoreProperties.getProperty("keyAlias")
-                    keyPassword = keystoreProperties.getProperty("keyPassword")
-                }
+            val keystorePropertiesFile = rootProject.file("keystore.properties")
+            val keystoreProperties = Properties()
+            if (keystorePropertiesFile.exists()) {
+                keystoreProperties.load(keystorePropertiesFile.inputStream())
             }
+
+            // Use environment variables if available, otherwise use keystore.properties
+            val keystoreFile = envKeystoreFile ?: keystoreProperties.getProperty("storeFile")
+            if (keystoreFile != null) {
+                storeFile = rootProject.file(keystoreFile)
+            }
+            storePassword = envKeystorePassword ?: keystoreProperties.getProperty("storePassword")
+            keyAlias = envKeyAlias ?: keystoreProperties.getProperty("keyAlias")
+            keyPassword = envKeyPassword ?: keystoreProperties.getProperty("keyPassword")
         }
     }
 
@@ -56,10 +56,16 @@ android {
                 "proguard-rules.pro"
             )
 
-            // Apply signing config if available and keystore file exists
+            // Apply signing config if keystore file is configured and exists
             val releaseSigningConfig = signingConfigs.getByName("release")
-            if (releaseSigningConfig.storeFile?.exists() == true) {
+            if (releaseSigningConfig.storeFile?.exists() == true &&
+                releaseSigningConfig.storePassword != null &&
+                releaseSigningConfig.keyAlias != null &&
+                releaseSigningConfig.keyPassword != null) {
                 signingConfig = releaseSigningConfig
+                println("Signing config applied: ${releaseSigningConfig.storeFile?.absolutePath}")
+            } else {
+                println("Signing config NOT applied - keystore file: ${releaseSigningConfig.storeFile?.absolutePath}, exists: ${releaseSigningConfig.storeFile?.exists()}")
             }
         }
     }
