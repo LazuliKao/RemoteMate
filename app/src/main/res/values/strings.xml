@@ -24,6 +24,7 @@
     <string name="remote_desktop_apps">Remote Desktop Apps</string>
     <string name="other_apps">Other Apps</string>
     <string name="remote_desktop_badge">Remote Desktop</string>
+    <string name="uninstalled_badge">Uninstalled</string>
 
     <!-- Windows App Hook Settings -->
     <string name="windows_app_hook">Windows App Hook</string>

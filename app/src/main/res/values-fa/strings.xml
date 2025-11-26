@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Remote Mate</string>
+    <string name="xposed_desc">تجربه بهتر دسکتاپ از راه دور</string>
+    <string name="about_module">این ماژول Xposed با YukiHookAPI ساخته شده است.\nاطلاعات بیشتر https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="about_module_extension">این ماژول Xposed توسط KavaRef پشتیبانی می‌شود.\nاطلاعات بیشتر https://github.com/HighCapable/KavaRef</string>
+    <string name="module_version">نسخه ماژول: %1$s</string>
+    <string name="module_not_activated">ماژول فعال نشده است</string>
+    <string name="module_is_activated">ماژول فعال است</string>
+    <string name="display_settings">تنظیمات نمایش</string>
+    <string name="hide_app_icon_on_launcher">مخفی کردن آیکون برنامه در لانچر</string>
+    <string name="hide_app_icon_on_launcher_tip">پس از مخفی کردن آیکون برنامه، رابط ممکن است بسته شود و دیگر در لانچر نمایش داده نشود. می‌توانید تنظیمات ماژول را در EdXposed یا LSPosed پیدا کرده و باز کنید.</string>
+    <string name="hide_app_icon_on_launcher_notice">توجه: حتماً ویژگی \"اجبار برنامه‌ها برای نمایش آیکون‌های لانچر\" را در LSPosed خاموش کنید</string>
+    <string name="settings">تنظیمات</string>
+    <string name="external_only_title">فقط صفحه‌کلید خارجی</string>
+    <string name="external_only_summary">فقط رویدادهای صفحه‌کلید خارجی را رهگیری کنید، صفحه‌کلید داخلی را نادیده بگیرید</string>
+    <string name="target_app_only_title">فقط برنامه هدف</string>
+    <string name="target_app_only_summary">فقط زمانی رهگیری کنید که برنامه دسکتاپ از راه دور هدف در پیش‌زمینه است</string>
+    <string name="select_target_apps_title">انتخاب برنامه‌های هدف</string>
+    <string name="select_target_apps_summary">انتخاب کنید کدام برنامه‌ها باید رهگیری صفحه‌کلید را فعال کنند</string>
+    <string name="target_apps_count">%1$d / %2$d</string>
+    <string name="selected_apps_count">%1$d انتخاب شده</string>
+    <string name="save">ذخیره</string>
+    <string name="loading_apps">در حال بارگذاری برنامه‌ها…</string>
+    <string name="remote_desktop_apps">برنامه‌های دسکتاپ از راه دور</string>
+    <string name="other_apps">برنامه‌های دیگر</string>
+    <string name="remote_desktop_badge">دسکتاپ از راه دور</string>
+    <string name="uninstalled_badge">حذف شده</string>
+    
+    <!-- Windows App Hook Settings -->
+    <string name="windows_app_hook">بهبود برنامه Windows</string>
+    <string name="windows_app_hook_desc">بهبود تجربه برنامه Microsoft Remote Desktop</string>
+    <string name="hide_soft_keyboard_title">مخفی کردن صفحه‌کلید نرم</string>
+    <string name="hide_soft_keyboard_summary">جلوگیری از نمایش صفحه‌کلید نرم در برنامه دسکتاپ از راه دور</string>
+    <string name="force_scancode_title">اجبار حالت Scancode</string>
+    <string name="force_scancode_summary">فعال‌سازی اجباری حالت scancode برای سازگاری بهتر صفحه‌کلید</string>
+    
+    <!-- Language Settings -->
+    <string name="language_settings">تنظیمات زبان</string>
+    <string name="language_title">زبان</string>
+    <string name="language_summary">زبان برنامه را انتخاب کنید</string>
+    <string name="language_follow_system">پیروی از سیستم</string>
+    <string name="language_english">English</string>
+    <string name="language_chinese">简体中文</string>
+    <string name="language_arabic">العربية</string>
+    <string name="language_persian">فارسی</string>
+    <string name="language_dialog_title">انتخاب زبان</string>
+    <string name="language_restart_tip">تغییر زبان پس از راه‌اندازی مجدد برنامه اعمال می‌شود</string>
+    
+    <!-- Additional Settings Strings -->
+    <string name="settings_description">تنظیم نحوه مدیریت ورودی صفحه‌کلید سخت‌افزاری توسط RemoteMate در این دستگاه</string>
+    <string name="keyboard_hook">قلاب صفحه‌کلید</string>
+    <string name="status_enabled">فعال</string>
+    <string name="status_disabled">غیرفعال</string>
+    <string name="enable_keyboard_hook">فعال کردن قلاب صفحه‌کلید</string>
+    <string name="enable_keyboard_hook_summary">رهگیری ورودی صفحه‌کلید خارجی برای جلوگیری از فعال شدن میانبرهای سیستم</string>
+</resources>

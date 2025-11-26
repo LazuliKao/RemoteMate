@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Remote Mate</string>
+    <string name="xposed_desc">تجربة أفضل لسطح المكتب البعيد</string>
+    <string name="about_module">تم إنشاء وحدة Xposed هذه باستخدام YukiHookAPI.\nتعرف على المزيد https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="about_module_extension">تعمل وحدة Xposed هذه بواسطة KavaRef.\nتعرف على المزيد https://github.com/HighCapable/KavaRef</string>
+    <string name="module_version">إصدار الوحدة: %1$s</string>
+    <string name="module_not_activated">الوحدة غير مفعلة</string>
+    <string name="module_is_activated">الوحدة مفعلة</string>
+    <string name="display_settings">إعدادات العرض</string>
+    <string name="hide_app_icon_on_launcher">إخفاء أيقونة التطبيق على المشغل</string>
+    <string name="hide_app_icon_on_launcher_tip">بعد إخفاء أيقونة التطبيق، قد يتم إغلاق الواجهة ولن تظهر مرة أخرى على المشغل. يمكنك العثور على إعدادات الوحدة وفتحها في EdXposed أو LSPosed.</string>
+    <string name="hide_app_icon_on_launcher_notice">ملاحظة: تأكد من إيقاف تشغيل ميزة \"فرض التطبيقات لإظهار أيقونات المشغل\" في LSPosed</string>
+    <string name="settings">الإعدادات</string>
+    <string name="external_only_title">لوحة المفاتيح الخارجية فقط</string>
+    <string name="external_only_summary">اعتراض الأحداث من لوحات المفاتيح الخارجية فقط، تجاهل لوحة المفاتيح المدمجة</string>
+    <string name="target_app_only_title">التطبيق المستهدف فقط</string>
+    <string name="target_app_only_summary">اعتراض فقط عندما يكون تطبيق سطح المكتب البعيد المستهدف في المقدمة</string>
+    <string name="select_target_apps_title">اختر التطبيقات المستهدفة</string>
+    <string name="select_target_apps_summary">اختر التطبيقات التي يجب أن تحفز اعتراض لوحة المفاتيح</string>
+    <string name="target_apps_count">%1$d / %2$d</string>
+    <string name="selected_apps_count">تم تحديد %1$d</string>
+    <string name="save">حفظ</string>
+    <string name="loading_apps">جارٍ تحميل التطبيقات…</string>
+    <string name="remote_desktop_apps">تطبيقات سطح المكتب البعيد</string>
+    <string name="other_apps">تطبيقات أخرى</string>
+    <string name="remote_desktop_badge">سطح المكتب البعيد</string>
+    <string name="uninstalled_badge">تم إلغاء التثبيت</string>
+    
+
+    <!-- Windows App Hook Settings -->
+    <string name="windows_app_hook">تحسين تطبيق Windows</string>
+    <string name="windows_app_hook_desc">تحسين تجربة تطبيق Microsoft Remote Desktop</string>
+    <string name="hide_soft_keyboard_title">إخفاء لوحة المفاتيح الناعمة</string>
+    <string name="hide_soft_keyboard_summary">منع لوحة المفاتيح الناعمة من الظهور في تطبيق سطح المكتب البعيد</string>
+    <string name="force_scancode_title">فرض وضع Scancode</string>
+    <string name="force_scancode_summary">فرض تمكين وضع scancode لتوافق أفضل للوحة المفاتيح</string>
+    
+    <!-- Language Settings -->
+    <string name="language_settings">إعدادات اللغة</string>
+    <string name="language_title">اللغة</string>
+    <string name="language_summary">اختر لغة التطبيق</string>
+    <string name="language_follow_system">اتباع النظام</string>
+    <string name="language_english">English</string>
+    <string name="language_chinese">简体中文</string>
+    <string name="language_arabic">العربية</string>
+    <string name="language_persian">فارسی</string>
+    <string name="language_dialog_title">اختر اللغة</string>
+    <string name="language_restart_tip">سيتم تطبيق تغيير اللغة عند إعادة تشغيل التطبيق</string>
+    
+    <!-- Additional Settings Strings -->
+    <string name="settings_description">ضبط كيفية تعامل RemoteMate مع إدخال لوحة المفاتيح على هذا الجهاز</string>
+    <string name="keyboard_hook">خطاف لوحة المفاتيح</string>
+    <string name="status_enabled">مفعل</string>
+    <string name="status_disabled">معطل</string>
+    <string name="enable_keyboard_hook">تفعيل خطاف لوحة المفاتيح</string>
+    <string name="enable_keyboard_hook_summary">اعتراض إدخال لوحة المفاتيح الخارجية لمنع تشغيل اختصارات النظام</string>
+</resources>

@@ -25,6 +25,7 @@
     <string name="remote_desktop_apps">远程桌面应用</string>
     <string name="other_apps">其他应用</string>
     <string name="remote_desktop_badge">远程桌面</string>
+    <string name="uninstalled_badge">已卸载</string>
 
     <!-- Windows App Hook Settings -->
     <string name="windows_app_hook">Windows 应用增强</string>
