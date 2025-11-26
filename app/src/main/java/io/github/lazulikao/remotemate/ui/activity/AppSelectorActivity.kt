@@ -32,7 +32,8 @@ data class AppInfo(
     val appName: String,
     val icon: Drawable?,
     val isRemoteDesktopApp: Boolean,
-    var isSelected: Boolean = false
+    var isSelected: Boolean = false,
+    val isUninstalled: Boolean = false
 )
 
 class AppSelectorActivity : BaseActivity() {
@@ -238,39 +239,64 @@ class AppSelectorActivity : BaseActivity() {
         val pm = packageManager
         val installedApps = pm.getInstalledApplications(PackageManager.GET_META_DATA)
         val selfPackageName = packageName // 排除模块自身
+        
+        val installedPackages = installedApps.map { it.packageName }.toSet()
+        val appList = mutableListOf<AppInfo>()
 
-        return installedApps
-            .filter { app ->
-                // 排除模块自身
-                if (app.packageName == selfPackageName) return@filter false
-                // 过滤掉系统应用（除非是已知的远程桌面应用）
-                val isSystemApp = (app.flags and ApplicationInfo.FLAG_SYSTEM) != 0
-                val isKnownRemote = app.packageName in knownRemoteDesktopPackages
-                val hasLauncher = pm.getLaunchIntentForPackage(app.packageName) != null
-                (hasLauncher && !isSystemApp) || isKnownRemote
-            }
-            .map { app ->
-                val appName = pm.getApplicationLabel(app).toString()
-                val icon = try {
-                    pm.getApplicationIcon(app.packageName)
-                } catch (e: Exception) {
-                    null
-                }
-                val isRemote = isRemoteDesktopApp(app.packageName, appName)
-                AppInfo(
-                    packageName = app.packageName,
-                    appName = appName,
-                    icon = icon,
-                    isRemoteDesktopApp = isRemote,
-                    isSelected = app.packageName in selectedPackages
+        // 首先添加已选中但已卸载的应用
+        for (packageName in selectedPackages) {
+            if (packageName !in installedPackages && packageName != selfPackageName) {
+                appList.add(
+                    AppInfo(
+                        packageName = packageName,
+                        appName = packageName, // 已卸载的应用只显示包名
+                        icon = null,
+                        isRemoteDesktopApp = false,
+                        isSelected = true,
+                        isUninstalled = true
+                    )
                 )
             }
-            .sortedWith(
-                compareBy(
-                    { !it.isSelected },           // 已选择的排在最前面
-                    { !it.isRemoteDesktopApp },   // 远程桌面应用次之
-                    { it.appName.lowercase() }    // 按名称字母排序
-                ))
+        }
+
+        // 然后添加已安装的应用
+        appList.addAll(
+            installedApps
+                .filter { app ->
+                    // 排除模块自身
+                    if (app.packageName == selfPackageName) return@filter false
+                    // 过滤掉系统应用（除非是已知的远程桌面应用）
+                    val isSystemApp = (app.flags and ApplicationInfo.FLAG_SYSTEM) != 0
+                    val isKnownRemote = app.packageName in knownRemoteDesktopPackages
+                    val hasLauncher = pm.getLaunchIntentForPackage(app.packageName) != null
+                    (hasLauncher && !isSystemApp) || isKnownRemote
+                }
+                .map { app ->
+                    val appName = pm.getApplicationLabel(app).toString()
+                    val icon = try {
+                        pm.getApplicationIcon(app.packageName)
+                    } catch (e: Exception) {
+                        null
+                    }
+                    val isRemote = isRemoteDesktopApp(app.packageName, appName)
+                    AppInfo(
+                        packageName = app.packageName,
+                        appName = appName,
+                        icon = icon,
+                        isRemoteDesktopApp = isRemote,
+                        isSelected = app.packageName in selectedPackages,
+                        isUninstalled = false
+                    )
+                }
+        )
+
+        return appList.sortedWith(
+            compareBy(
+                { !it.isUninstalled },        // 已卸载的排在最前面
+                { !it.isSelected },           // 已选择的次之
+                { !it.isRemoteDesktopApp },   // 远程桌面应用再次之
+                { it.appName.lowercase() }    // 按名称字母排序
+            ))
     }
 
     private fun displayApps(apps: List<AppInfo>) {
@@ -314,7 +340,9 @@ class AppSelectorActivity : BaseActivity() {
             }
             background = GradientDrawable().apply {
                 cornerRadius = 12.dp.toFloat()
-                setColor(ColorUtils.setAlphaComponent(getColor(R.color.colorTextDark), 15))
+                // 已卸载的应用使用不同的背景色
+                val alpha = if (app.isUninstalled) 10 else 15
+                setColor(ColorUtils.setAlphaComponent(getColor(R.color.colorTextDark), alpha))
             }
             updatePadding(left = 12.dp, top = 12.dp, right = 12.dp, bottom = 12.dp)
         }
@@ -324,7 +352,11 @@ class AppSelectorActivity : BaseActivity() {
             layoutParams = LinearLayout.LayoutParams(44.dp, 44.dp).apply {
                 marginEnd = 12.dp
             }
-            if (app.icon != null) {
+            if (app.isUninstalled) {
+                // 已卸载的应用显示默认图标并半透明
+                setImageResource(Android_R.drawable.sym_def_app_icon)
+                alpha = 0.4f
+            } else if (app.icon != null) {
                 setImageDrawable(app.icon)
             } else {
                 setImageResource(Android_R.drawable.sym_def_app_icon)
@@ -363,13 +395,42 @@ class AppSelectorActivity : BaseActivity() {
         }
         infoLayout.addView(packageText)
 
+        // 标签容器（可能包含多个标签）
+        val badgeLayout = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                topMargin = 4.dp
+            }
+        }
+
+        if (app.isUninstalled) {
+            val uninstalledBadge = TextView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                text = getString(R.string.uninstalled_badge)
+                textColor = getColor(R.color.colorTextGray)
+                textSize = 10f
+                background = GradientDrawable().apply {
+                    cornerRadius = 4.dp.toFloat()
+                    setColor(ColorUtils.setAlphaComponent(getColor(Android_R.color.holo_red_light), 40))
+                }
+                updatePadding(left = 6.dp, top = 2.dp, right = 6.dp, bottom = 2.dp)
+            }
+            badgeLayout.addView(uninstalledBadge)
+        }
+
         if (app.isRemoteDesktopApp) {
-            val badge = TextView(this).apply {
+            val remoteBadge = TextView(this).apply {
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
-                    topMargin = 4.dp
+                    if (app.isUninstalled) marginStart = 6.dp
                 }
                 text = getString(R.string.remote_desktop_badge)
                 textColor = getColor(R.color.colorTextGray)
@@ -380,7 +441,11 @@ class AppSelectorActivity : BaseActivity() {
                 }
                 updatePadding(left = 6.dp, top = 2.dp, right = 6.dp, bottom = 2.dp)
             }
-            infoLayout.addView(badge)
+            badgeLayout.addView(remoteBadge)
+        }
+
+        if (badgeLayout.childCount > 0) {
+            infoLayout.addView(badgeLayout)
         }
 
         itemLayout.addView(infoLayout)
