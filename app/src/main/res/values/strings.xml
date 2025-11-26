@@ -32,4 +32,24 @@
     <string name="hide_soft_keyboard_summary">Prevent soft keyboard from showing in Remote Desktop app</string>
     <string name="force_scancode_title">Force Scancode Mode</string>
     <string name="force_scancode_summary">Force enable scancode mode for better keyboard compatibility</string>
+    
+    <!-- Language Settings -->
+    <string name="language_settings">Language Settings</string>
+    <string name="language_title">Language</string>
+    <string name="language_summary">Choose app language</string>
+    <string name="language_follow_system">Follow System</string>
+    <string name="language_english">English</string>
+    <string name="language_chinese">简体中文</string>
+    <string name="language_arabic">العربية</string>
+    <string name="language_persian">فارسی</string>
+    <string name="language_dialog_title">Select Language</string>
+    <string name="language_restart_tip">Language change will be applied when app restarts</string>
+    
+    <!-- Additional Settings Strings -->
+    <string name="settings_description">Tune how RemoteMate handles hardware keyboard input on this device</string>
+    <string name="keyboard_hook">Keyboard Hook</string>
+    <string name="status_enabled">Enabled</string>
+    <string name="status_disabled">Disabled</string>
+    <string name="enable_keyboard_hook">Enable Keyboard Hook</string>
+    <string name="enable_keyboard_hook_summary">Intercept external keyboard input to prevent system shortcuts from being triggered</string>
 </resources>

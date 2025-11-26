@@ -26,7 +26,6 @@ import io.github.lazulikao.remotemate.R
 import com.highcapable.betterandroid.system.extension.component.disableComponent
 import com.highcapable.betterandroid.system.extension.component.enableComponent
 import com.highcapable.betterandroid.system.extension.component.isComponentEnabled
-import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
 import com.highcapable.betterandroid.ui.extension.component.base.getThemeAttrsDrawable
 import com.highcapable.betterandroid.ui.extension.view.textColor
 import com.highcapable.betterandroid.ui.extension.view.updateMargins
@@ -41,9 +40,10 @@ import com.highcapable.hikage.widget.android.widget.TextView
 import com.highcapable.hikage.widget.androidx.core.widget.NestedScrollView
 import com.highcapable.hikage.widget.io.github.lazulikao.remotemate.ui.view.MaterialSwitch
 import com.highcapable.yukihookapi.YukiHookAPI
+import io.github.lazulikao.remotemate.utils.LanguageManager
 import android.R as Android_R
 
-class MainActivity : AppViewsActivity() {
+class MainActivity : BaseActivity() {
 
     private val homeComponent by lazy {
         ComponentName(

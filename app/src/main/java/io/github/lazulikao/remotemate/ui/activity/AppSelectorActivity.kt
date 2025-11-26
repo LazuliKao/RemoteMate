@@ -20,7 +20,6 @@ import androidx.core.view.updatePadding
 import androidx.core.widget.NestedScrollView
 import io.github.lazulikao.remotemate.R
 import io.github.lazulikao.remotemate.hook.modules.HookKeyboard
-import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
 import com.highcapable.betterandroid.ui.extension.component.base.getThemeAttrsDrawable
 import com.highcapable.betterandroid.ui.extension.view.textColor
 import com.highcapable.betterandroid.ui.extension.view.updateTypeface
@@ -36,7 +35,7 @@ data class AppInfo(
     var isSelected: Boolean = false
 )
 
-class AppSelectorActivity : AppViewsActivity() {
+class AppSelectorActivity : BaseActivity() {
 
     private val hookKeyboardPrefs by lazy { prefs("hook_keyboard") }
     private val selectedPackages = mutableSetOf<String>()

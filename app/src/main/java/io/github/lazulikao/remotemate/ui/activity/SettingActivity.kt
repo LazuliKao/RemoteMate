@@ -15,7 +15,6 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.updatePadding
 import io.github.lazulikao.remotemate.R
 import io.github.lazulikao.remotemate.hook.modules.HookKeyboard
-import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
 import com.highcapable.betterandroid.ui.extension.component.base.getThemeAttrsDrawable
 import com.highcapable.betterandroid.ui.extension.view.textColor
 import com.highcapable.betterandroid.ui.extension.view.updateTypeface
@@ -27,9 +26,11 @@ import com.highcapable.hikage.widget.android.widget.TextView
 import com.highcapable.hikage.widget.androidx.core.widget.NestedScrollView
 import com.highcapable.hikage.widget.io.github.lazulikao.remotemate.ui.view.MaterialSwitch
 import com.highcapable.yukihookapi.hook.factory.prefs
+import io.github.lazulikao.remotemate.utils.LanguageManager
+import android.app.AlertDialog
 import android.R as Android_R
 
-class SettingActivity : AppViewsActivity() {
+class SettingActivity : BaseActivity() {
 
     private val hookKeyboardPrefs by lazy { prefs("hook_keyboard") }
     private val hookWindowsAppPrefs by lazy { prefs("hook_windows_app") }
@@ -108,7 +109,7 @@ class SettingActivity : AppViewsActivity() {
                         bottomMargin = 12.dp
                     }
                 ) {
-                    text = "Tune how RemoteMate handles hardware keyboard input on this device"
+                    text = getString(R.string.settings_description)
                     textColor = colorResource(R.color.colorTextDark)
                     textSize = 13f
                     alpha = 0.75f
@@ -176,7 +177,7 @@ class SettingActivity : AppViewsActivity() {
                                         weight = 1f
                                     }
                                 ) {
-                                    text = "Keyboard Hook"
+                                    text = getString(R.string.keyboard_hook)
                                     textColor = colorResource(R.color.colorTextGray)
                                     textSize = 14f
                                     updateTypeface(Typeface.BOLD)
@@ -186,7 +187,7 @@ class SettingActivity : AppViewsActivity() {
                                     lparams = LayoutParams()
                                 ) {
                                     hookStatusLabel = this
-                                    text = if (isHookEnabledInitially) "Enabled" else "Disabled"
+                                    text = if (isHookEnabledInitially) getString(R.string.status_enabled) else getString(R.string.status_disabled)
                                     textColor = colorResource(R.color.colorTextGray)
                                     textSize = 12f
                                     alpha = 0.85f
@@ -223,7 +224,7 @@ class SettingActivity : AppViewsActivity() {
                                     }
                                 ) {
                                     TextView {
-                                        text = "Enable Keyboard Hook"
+                                        text = getString(R.string.enable_keyboard_hook)
                                         textColor = colorResource(R.color.colorTextGray)
                                         textSize = 16f
                                     }
@@ -232,7 +233,7 @@ class SettingActivity : AppViewsActivity() {
                                             topMargin = 4.dp
                                         }
                                     ) {
-                                        text = "Intercept external keyboard input to prevent system shortcuts from being triggered"
+                                        text = getString(R.string.enable_keyboard_hook_summary)
                                         textColor = colorResource(R.color.colorTextDark)
                                         textSize = 12f
                                         alpha = 0.7f
@@ -247,7 +248,7 @@ class SettingActivity : AppViewsActivity() {
                                         if (button.isPressed) {
                                             hookKeyboardPrefs.edit { putBoolean("enable_hook_keyboard", checked) }
                                         }
-                                        hookStatusLabel?.text = if (checked) "Enabled" else "Disabled"
+                                        hookStatusLabel?.text = if (checked) getString(R.string.status_enabled) else getString(R.string.status_disabled)
                                     }
                                 }
                             }
@@ -498,7 +499,7 @@ class SettingActivity : AppViewsActivity() {
                                     lparams = LayoutParams()
                                 ) {
                                     windowsAppStatusLabel = this
-                                    text = if (isWindowsAppHookEnabled) "Enabled" else "Disabled"
+                                    text = if (isWindowsAppHookEnabled) getString(R.string.status_enabled) else getString(R.string.status_disabled)
                                     textColor = colorResource(R.color.colorTextGray)
                                     textSize = 12f
                                     alpha = 0.85f
@@ -636,6 +637,124 @@ class SettingActivity : AppViewsActivity() {
                             }
                         }
 
+                        Space(lparams = LayoutParams(height = 16.dp))
+
+                        // Language Settings Card
+                        LinearLayout(
+                            lparams = LayoutParams(widthMatchParent = true),
+                            init = {
+                                orientation = LinearLayout.VERTICAL
+                                setBackgroundResource(R.drawable.bg_permotion_round)
+                                updatePadding(left = 20.dp, top = 20.dp, right = 20.dp, bottom = 20.dp)
+                                elevation = 6f
+                            }
+                        ) {
+                            // Card header
+                            LinearLayout(
+                                lparams = LayoutParams(widthMatchParent = true) {
+                                    bottomMargin = 12.dp
+                                },
+                                init = {
+                                    gravity = Gravity.CENTER_VERTICAL
+                                }
+                            ) {
+                                LinearLayout(
+                                    lparams = LayoutParams(40.dp, 40.dp) {
+                                        marginEnd = 12.dp
+                                    },
+                                    init = {
+                                        gravity = Gravity.CENTER
+                                        background = GradientDrawable().apply {
+                                            cornerRadius = 20.dp.toFloat()
+                                            setColor(ColorUtils.setAlphaComponent(colorResource(R.color.colorTextDark), 30))
+                                        }
+                                    }
+                                ) {
+                                    ImageView(
+                                        lparams = LayoutParams(18.dp, 18.dp)
+                                    ) {
+                                        setImageResource(Android_R.drawable.ic_menu_sort_by_size)
+                                        imageTintList = stateColorResource(R.color.colorTextGray)
+                                    }
+                                }
+                                TextView(
+                                    lparams = LayoutParams {
+                                        weight = 1f
+                                    }
+                                ) {
+                                    text = getString(R.string.language_settings)
+                                    textColor = colorResource(R.color.colorTextGray)
+                                    textSize = 14f
+                                    updateTypeface(Typeface.BOLD)
+                                    alpha = 0.9f
+                                }
+                            }
+
+                            View(
+                                lparams = LayoutParams(widthMatchParent = true, height = 1.dp) {
+                                    bottomMargin = 16.dp
+                                }
+                            ) {
+                                setBackgroundColor(ColorUtils.setAlphaComponent(colorResource(R.color.colorTextDark), 24))
+                            }
+
+                            // Language Selection
+                            LinearLayout(
+                                lparams = LayoutParams(widthMatchParent = true),
+                                init = {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    gravity = Gravity.CENTER_VERTICAL
+                                    background = getThemeAttrsDrawable(Android_R.attr.selectableItemBackground)
+                                    setOnClickListener { showLanguageDialog() }
+                                }
+                            ) {
+                                LinearLayout(
+                                    lparams = LayoutParams(widthMatchParent = true) {
+                                        weight = 1f
+                                        marginEnd = 12.dp
+                                    },
+                                    init = {
+                                        orientation = LinearLayout.VERTICAL
+                                    }
+                                ) {
+                                    TextView {
+                                        text = getString(R.string.language_title)
+                                        textColor = colorResource(R.color.colorTextGray)
+                                        textSize = 16f
+                                    }
+                                    TextView(
+                                        lparams = LayoutParams {
+                                            topMargin = 4.dp
+                                        }
+                                    ) {
+                                        text = getString(R.string.language_summary)
+                                        textColor = colorResource(R.color.colorTextDark)
+                                        textSize = 12f
+                                        alpha = 0.7f
+                                        setLineSpacing(4f, 1f)
+                                    }
+                                }
+                                TextView(
+                                    lparams = LayoutParams()
+                                ) {
+                                    val currentLanguage = LanguageManager.getLanguage(this@SettingActivity)
+                                    text = LanguageManager.getLanguageName(this@SettingActivity, currentLanguage)
+                                    textColor = colorResource(R.color.colorTextGray)
+                                    textSize = 12f
+                                    alpha = 0.85f
+                                }
+                                ImageView(
+                                    lparams = LayoutParams(20.dp, 20.dp) {
+                                        marginStart = 8.dp
+                                    }
+                                ) {
+                                    setImageResource(R.drawable.ic_chevron_right)
+                                    imageTintList = stateColorResource(R.color.colorTextGray)
+                                    alpha = 0.6f
+                                }
+                            }
+                        }
+
                         Space(lparams = LayoutParams(height = 24.dp))
                     }
                 }
@@ -643,10 +762,42 @@ class SettingActivity : AppViewsActivity() {
         }
     }
 
+    private fun showLanguageDialog() {
+        val languages = listOf(
+            LanguageManager.LANGUAGE_FOLLOW_SYSTEM,
+            LanguageManager.LANGUAGE_ENGLISH,
+            LanguageManager.LANGUAGE_CHINESE,
+            LanguageManager.LANGUAGE_ARABIC,
+            LanguageManager.LANGUAGE_PERSIAN
+        )
+        
+        val languageNames = languages.map { 
+            LanguageManager.getLanguageName(this, it)
+        }.toTypedArray()
+        
+        val currentLanguage = LanguageManager.getLanguage(this)
+        val currentIndex = languages.indexOf(currentLanguage)
+        
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.language_dialog_title))
+            .setSingleChoiceItems(languageNames, currentIndex) { dialog, which ->
+                val selectedLanguage = languages[which]
+                if (selectedLanguage != currentLanguage) {
+                    LanguageManager.setLanguage(this, selectedLanguage)
+                    dialog.dismiss()
+                    recreate()
+                } else {
+                    dialog.dismiss()
+                }
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
     private fun updateWindowsAppStatus() {
         val hideSoftKeyboard = hookWindowsAppPrefs.getBoolean("hide_soft_keyboard", true)
         val forceScancode = hookWindowsAppPrefs.getBoolean("force_scancode", true)
         val isEnabled = hideSoftKeyboard || forceScancode
-        windowsAppStatusLabel?.text = if (isEnabled) "Enabled" else "Disabled"
+        windowsAppStatusLabel?.text = if (isEnabled) getString(R.string.status_enabled) else getString(R.string.status_disabled)
     }
 }
