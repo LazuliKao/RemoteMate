@@ -70,7 +70,7 @@ class SettingActivity : BaseActivity() {
         findViewById<View>(Android_R.id.content).setBackgroundResource(R.color.colorThemeBackground)
 
         setContentView {
-            val isHookEnabledInitially = hookKeyboardPrefs.getBoolean("enable_hook_keyboard", false)
+            val isHookEnabledInitially = hookKeyboardPrefs.getBoolean("enable_hook_keyboard", true)
             LinearLayout(
                 lparams = LayoutParams(matchParent = true),
                 init = {
@@ -134,7 +134,7 @@ class SettingActivity : BaseActivity() {
 
                         // Keyboard Hook Settings Card
                         val isExternalOnlyInitially = hookKeyboardPrefs.getBoolean("external_only", true)
-                        val isTargetAppOnlyInitially = hookKeyboardPrefs.getBoolean("target_app_only", true)
+                        val isTargetAppOnlyInitially = hookKeyboardPrefs.getBoolean("target_app_only", false)
                         LinearLayout(
                             lparams = LayoutParams(widthMatchParent = true),
                             init = {

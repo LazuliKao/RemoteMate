@@ -189,14 +189,6 @@ class MainActivity : BaseActivity() {
                                 isVisible = false
                             }
                         }
-                        TextView {
-                            alpha = 0.8f
-                            isSingleLine = true
-                            ellipsize = TextUtils.TruncateAt.END
-                            textColor = colorResource(R.color.white)
-                            textSize = 13f
-                            text = "- Your custom text here -"
-                        }
                         TextView(
                             lparams = LayoutParams {
                                 topMargin = 5.dp

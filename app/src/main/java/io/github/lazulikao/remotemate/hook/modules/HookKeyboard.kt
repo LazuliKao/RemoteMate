@@ -24,9 +24,9 @@ class HookKeyboard : IHookModule {
     override fun onLoad(env: PackageParam) {
         env.apply {
             val hookKeyboard = prefs("hook_keyboard")
-            fun isHookKeyboardEnabled() = hookKeyboard.getBoolean("enable_hook_keyboard", false)
+            fun isHookKeyboardEnabled() = hookKeyboard.getBoolean("enable_hook_keyboard", true)
             fun isExternalOnlyEnabled() = hookKeyboard.getBoolean("external_only", true)
-            fun isTargetAppOnlyEnabled() = hookKeyboard.getBoolean("target_app_only", true)
+            fun isTargetAppOnlyEnabled() = hookKeyboard.getBoolean("target_app_only", false)
             fun getEnabledTargetPackages(): Set<String> {
                 val saved = hookKeyboard.getString("target_packages", "")
                 return if (saved.isBlank()) DEFAULT_TARGET_PACKAGES
