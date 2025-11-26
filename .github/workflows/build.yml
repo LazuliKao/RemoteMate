@@ -15,6 +15,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
       - name: Checkout code
@@ -30,6 +32,33 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       
+      - name: Setup version
+        id: setup_version
+        run: |
+          BASE_VERSION=$(grep "project.app.versionName" gradle.properties | cut -d'=' -f2 | tr -d '"')
+          BASE_VERSION_CODE=$(grep "project.app.versionCode" gradle.properties | cut -d'=' -f2)
+          
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            # Tag build: use tag as version (e.g., v1.0.0 -> 1.0.0)
+            TAG_VERSION=${GITHUB_REF#refs/tags/v}
+            VERSION_NAME="$TAG_VERSION"
+            VERSION_CODE=$BASE_VERSION_CODE
+            echo "is_tag=true" >> $GITHUB_OUTPUT
+            echo "tag_version=$TAG_VERSION" >> $GITHUB_OUTPUT
+          else
+            # Non-tag build: append git info (e.g., 1.0.0.git.a1b2c3d)
+            GIT_SHORT_SHA=$(git rev-parse --short HEAD)
+            GIT_COMMIT_COUNT=$(git rev-list --count HEAD)
+            VERSION_NAME="${BASE_VERSION}.git.${GIT_SHORT_SHA}"
+            VERSION_CODE=$((BASE_VERSION_CODE + GIT_COMMIT_COUNT))
+            echo "is_tag=false" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+          echo "base_version=$BASE_VERSION" >> $GITHUB_OUTPUT
+          echo "Build version: $VERSION_NAME (code: $VERSION_CODE)"
+      
       - name: Decode keystore
         if: ${{ github.event_name != 'pull_request' }}
         run: |
@@ -37,44 +66,63 @@ jobs:
       
       - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
+        env:
+          VERSION_NAME: ${{ steps.setup_version.outputs.version_name }}
+          VERSION_CODE: ${{ steps.setup_version.outputs.version_code }}
       
       - name: Build Release APK (Unsigned)
         if: ${{ github.event_name == 'pull_request' }}
         run: ./gradlew assembleRelease --stacktrace
+        env:
+          VERSION_NAME: ${{ steps.setup_version.outputs.version_name }}
+          VERSION_CODE: ${{ steps.setup_version.outputs.version_code }}
       
       - name: Build Release APK (Signed)
         if: ${{ github.event_name != 'pull_request' }}
         run: ./gradlew assembleRelease --stacktrace
         env:
+          VERSION_NAME: ${{ steps.setup_version.outputs.version_name }}
+          VERSION_CODE: ${{ steps.setup_version.outputs.version_code }}
           KEYSTORE_FILE: keystore.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       
+      - name: Rename APK files with version
+        run: |
+          VERSION_NAME="${{ steps.setup_version.outputs.version_name }}"
+          
+          # Rename debug APK
+          if [ -f app/build/outputs/apk/debug/app-debug.apk ]; then
+            mv app/build/outputs/apk/debug/app-debug.apk \
+               app/build/outputs/apk/debug/RemoteMate-v${VERSION_NAME}-debug.apk
+          fi
+          
+          # Rename release APK
+          if [ -f app/build/outputs/apk/release/app-release.apk ]; then
+            mv app/build/outputs/apk/release/app-release.apk \
+               app/build/outputs/apk/release/RemoteMate-v${VERSION_NAME}-release.apk
+          elif [ -f app/build/outputs/apk/release/app-release-unsigned.apk ]; then
+            mv app/build/outputs/apk/release/app-release-unsigned.apk \
+               app/build/outputs/apk/release/RemoteMate-v${VERSION_NAME}-release-unsigned.apk
+          fi
+      
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: RemoteMate-debug
+          name: RemoteMate-v${{ steps.setup_version.outputs.version_name }}-debug
           path: app/build/outputs/apk/debug/*.apk
           retention-days: 30
       
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
-          name: RemoteMate-release
+          name: RemoteMate-v${{ steps.setup_version.outputs.version_name }}-release
           path: app/build/outputs/apk/release/*.apk
           retention-days: 90
       
-      - name: Get version name
-        if: startsWith(github.ref, 'refs/tags/')
-        id: version
-        run: |
-          VERSION_NAME=$(grep "project.app.versionName" gradle.properties | cut -d'=' -f2 | tr -d '"')
-          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
-          echo "tag_name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-      
       - name: Create Release
-        if: startsWith(github.ref, 'refs/tags/')
+        if: steps.setup_version.outputs.is_tag == 'true'
         uses: softprops/action-gh-release@v2
         with:
           files: |
@@ -82,25 +130,54 @@ jobs:
             app/build/outputs/apk/release/*.apk
           draft: false
           prerelease: false
-          name: RemoteMate ${{ steps.version.outputs.tag_name }}
+          name: RemoteMate v${{ steps.setup_version.outputs.tag_version }}
           body: |
-            ## RemoteMate ${{ steps.version.outputs.tag_name }}
+            ## RemoteMate v${{ steps.setup_version.outputs.tag_version }}
             
-            ### 下载 / Download
+            ### 📦 下载 / Download
             
-            - **RemoteMate-debug.apk**: Debug版本，包含调试信息
-            - **RemoteMate-release.apk**: Release版本，已优化和混淆
+            - **RemoteMate-v${{ steps.setup_version.outputs.version_name }}-debug.apk**: Debug版本，包含调试信息
+            - **RemoteMate-v${{ steps.setup_version.outputs.version_name }}-release.apk**: Release版本，已优化和混淆
             
-            ### 安装说明 / Installation
+            ### 📋 安装说明 / Installation
             
             1. 下载对应的APK文件
             2. 在设备上安装APK
             3. 在Xposed/LSPosed模块中启用RemoteMate
             4. 重启设备或目标应用
             
-            ### 版本信息 / Version Info
+            ### ℹ️ 版本信息 / Version Info
             
-            - Version: ${{ steps.version.outputs.version_name }}
-            - Build: ${{ github.sha }}
+            - Version: ${{ steps.setup_version.outputs.version_name }}
+            - Version Code: ${{ steps.setup_version.outputs.version_code }}
+            - Commit: ${{ github.sha }}
+            
+            ### ✨ 更新内容 / Changelog
+            
+            _请在此处添加更新说明 / Please add changelog here_
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Update version in gradle.properties after release
+        if: steps.setup_version.outputs.is_tag == 'true'
+        run: |
+          # Checkout main branch
+          git fetch origin main
+          git checkout main
+          
+          # Update version in gradle.properties
+          sed -i 's/project.app.versionName=.*/project.app.versionName="${{ steps.setup_version.outputs.tag_version }}"/' gradle.properties
+          sed -i 's/project.app.versionCode=.*/project.app.versionCode=${{ steps.setup_version.outputs.version_code }}/' gradle.properties
+          
+          # Commit and push
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add gradle.properties
+          
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: bump version to ${{ steps.setup_version.outputs.tag_version }} [skip ci]"
+            git push origin main
+            echo "Version updated in gradle.properties and pushed to main"
+          else
+            echo "No version changes to commit"
+          fi

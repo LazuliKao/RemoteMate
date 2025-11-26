@@ -16,8 +16,11 @@ android {
         applicationId = gropify.project.app.packageName
         minSdk = gropify.project.android.minSdk
         targetSdk = gropify.project.android.targetSdk
-        versionName = gropify.project.app.versionName
-        versionCode = gropify.project.app.versionCode
+        
+        // Use environment variable if available (for CI/CD), otherwise use gradle.properties
+        versionName = System.getenv("VERSION_NAME") ?: gropify.project.app.versionName
+        versionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: gropify.project.app.versionCode
+        
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
