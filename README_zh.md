@@ -63,7 +63,14 @@ RemoteMate 通过拦截系统级键盘事件，为远程桌面应用提供无缝
 ### 📖 文档
 
 - [构建指南](docs/BUILD.md) - 从源代码构建的说明
+- [版本管理](docs/VERSION_MANAGEMENT.md) - 自动版本控制系统
 - [APK 签名指南](docs/APK_SIGNING.md) - APK 签名配置说明
+
+### 🔗 相似项目
+
+- [MiuiPadMeta](https://github.com/CwithW/MiuiPadMeta) - MIUI 平板键盘 Meta 键映射
+- [Xposed-Keyboard-tweaks](https://github.com/mReversing/Xposed-Keyboard-tweaks) - 键盘自定义调整的 Xposed 模块
+- [DisableAltTab](https://github.com/CwithW/DisableAltTab) - 禁用 Alt+Tab 快捷键以获得更好的远程桌面体验
 
 ### 🛠️ 技术栈
 

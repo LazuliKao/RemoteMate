@@ -63,7 +63,15 @@ Launch RemoteMate and configure:
 ### 📖 Documentation
 
 - [Build Guide](docs/BUILD.md) - Instructions for building from source
+- [Version Management](docs/VERSION_MANAGEMENT.md) - Automatic version control system
 - [APK Signing Guide](docs/APK_SIGNING.md) - APK signing configuration
+
+### 🔗 Similar Projects
+
+- [MiuiPadMeta](https://github.com/CwithW/MiuiPadMeta) - Meta key mapping for MIUI Pad keyboards
+- [Xposed-Keyboard-tweaks](https://github.com/mReversing/Xposed-Keyboard-tweaks) - Xposed module for keyboard customization tweaks
+- [DisableAltTab](https://github.com/CwithW/DisableAltTab) - Disable Alt+Tab shortcut for better remote desktop experience
+- 
 
 ### 🛠️ Technology Stack
 
